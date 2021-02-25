@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace L2_DAVH_AFPE.Models.Data
 {
-    public class Tree
+    public class Tree<T>
     {
         //public TreeNode<T> Root { get; set; }
 
-        private TreeNode root;        
+        private TreeNode<T> root;        
         
 
         public Tree()
@@ -17,26 +17,25 @@ namespace L2_DAVH_AFPE.Models.Data
             root = null;
         }
 
-        internal TreeNode Root { get => root; set => root = value; }
+        internal TreeNode<T> Root { get => root; set => root = value; }
 
-        public TreeNode Insert(int ID, TreeNode pNode)
+        public TreeNode<T> Insert(T newvalue, TreeNode<T> pNode, Func<T, bool> Comparer)
         {
-            TreeNode temp = null;
+            TreeNode<T> temp = null;
 
             if (pNode == null)
             { 
-                temp = new TreeNode();
-                temp.Id = ID;
+                temp = new TreeNode<T>(newvalue);
 
                 return temp;
             }
 
-            if (ID < pNode.Id) {
-                pNode.left = Insert(ID,pNode.left);
+            if (Comparer.Invoke(newvalue)) {
+                pNode.left = Insert(newvalue, pNode.left, Comparer);
             }
-            if (ID > pNode.Id)
+            else
             {
-                pNode.right = Insert(ID, pNode.right);
+                pNode.right = Insert(newvalue, pNode.right, Comparer);
             }
             return pNode;
         }

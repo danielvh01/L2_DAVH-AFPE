@@ -4,20 +4,19 @@ using System.Text;
 
 namespace L2_DAVH_AFPE.Models.Data
 {
-    public class TreeNode
+    public class TreeNode<T>
     {
-        public int id;
-        public TreeNode left = null;
-        public TreeNode right = null;
+        public TreeNode<T> left = null;
+        public TreeNode<T> right = null;
+        public T value { get; set; }
 
-        public int Id { get => id; set => id = value; }
 
-        internal TreeNode Left { get => left; set => left = value; }
-        internal TreeNode Right { get => right; set => right = value; }
+        internal TreeNode<T> Left { get => left; set => left = value; }
+        internal TreeNode<T> Right { get => right; set => right = value; }
 
-        public TreeNode()
+        public TreeNode(T newvalue)
         {
-            id = default;
+            value = newvalue;
             left = null;
             right = null;
         }
