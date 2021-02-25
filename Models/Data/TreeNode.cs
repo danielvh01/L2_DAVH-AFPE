@@ -1,26 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 
 namespace L2_DAVH_AFPE.Models.Data
 {
-    public class TreeNode<T>
+    public class TreeNode
     {
-        public T Data { get; set; }
-        public TreeNode<T> Parent { get; set; }
-        public List<TreeNode<T>> Children { get; set; }
-        public int GetHeight()
-        {
-            int height = 1;
-            TreeNode<T> current = this;
-            while (current.Parent != null)
-            {
-                height++;
-                current = current.Parent;
+        public int id;
+        public TreeNode left = null;
+        public TreeNode right = null;
 
-            }
-            return height;
+        public int Id { get => id; set => id = value; }
+
+        internal TreeNode Left { get => left; set => left = value; }
+        internal TreeNode Right { get => right; set => right = value; }
+
+        public TreeNode()
+        {
+            id = default;
+            left = null;
+            right = null;
         }
+
+
+        
+       
     }
 }
