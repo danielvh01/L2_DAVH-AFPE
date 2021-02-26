@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using L2_DAVH_AFPE.Models.Data;
 
 namespace L2_DAVH_AFPE.Controllers
 {
@@ -12,7 +13,7 @@ namespace L2_DAVH_AFPE.Controllers
         // GET: PharmacyController
         public ActionResult Index()
         {
-            return View();
+            return View(Singleton.Instance.HandcraftedList);
         }
 
         // GET: PharmacyController/Details/5
