@@ -25,7 +25,7 @@ namespace L2_DAVH_AFPE.Controllers
         // GET: PharmacyController
         public ActionResult Index()
         {
-            return View(Singleton.Instance.HandcraftedList);
+            return View(Singleton.Instance.orders);
         }
 
         // GET: PharmacyController/Details/5
@@ -47,6 +47,7 @@ namespace L2_DAVH_AFPE.Controllers
         {
             try
             {
+
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -102,6 +103,11 @@ namespace L2_DAVH_AFPE.Controllers
             return View();
         }
 
+        public void Resuply()
+        {
+
+        }
+
         [HttpPost]
         public ActionResult Import(FileModel model)
         {
@@ -122,21 +128,25 @@ namespace L2_DAVH_AFPE.Controllers
                 txtfldprsr.HasFieldsEnclosedInQuotes = true;
 
                 string[] Drugss;
-
                 while (!txtfldprsr.EndOfData) {
-                    for (int i = 0; i < 5; i++) {
-                        Drugss = txtfldprsr.ReadFields();
-                        var newDrug = new Models.PharmacyModel
-                        {
-                            Id   = Convert.ToInt32(Drugss[1]),
-                            Name = Drugss[2],
-                            Description = Drugss[3],
-                            Production_Factory = Drugss[4],
-                            Price = Convert.ToDouble(Drugss[5]),
-                            Quantity = Convert.ToInt32(Drugss[6])
+                    Drugss = txtfldprsr.ReadFields();
+                    var newDrug = new Models.PharmacyModel
+                    {
+                        Id = int.Parse(Drugss[0]),
+                        Name = Drugss[1].ToString(),
+                        Description = Drugss[2].ToString(),
+                        Production_Factory = Drugss[3].ToString(),
+                        Price = double.Parse(Drugss[4].Substring(1)),
+                        Quantity = int.Parse(Drugss[5])
                         };
+                    Singleton.Instance.inventory.InsertAtEnd(newDrug);
+                    cont++;
+                    if(newDrug.Quantity > 0)
+                    {
+                        Singleton.Instance.guide.Insert(new Drug { name = Drugss[1], numberline = cont }, Singleton.Instance.guide.Root, x => x.name.CompareTo(Singleton.Instance.guide.Root.value.name));
                     }
                 }
+
 
 
             }

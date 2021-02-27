@@ -29,7 +29,7 @@ namespace L2_DAVH_AFPE.Controllers
         }
         public IActionResult IndexPharmacy()
         {
-            return RedirectToAction(nameof(Index), ("Pharmacy"));
+            return RedirectToAction("Import", ("Pharmacy"));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -14,7 +14,7 @@ namespace L2_DAVH_AFPE.Models.Data
         public int CompareTo(object obj)
         {
             var comparer = ((Drug)obj).name;
-            return comparer == name ? 1 : -1;
+            return comparer.CompareTo(name);
         }
 
     }

@@ -11,11 +11,11 @@ namespace L2_DAVH_AFPE.Models.Data
         private readonly static Singleton _instance = new Singleton();
         public DoubleLinkedList<Cart> orders;
         public DoubleLinkedList<PharmacyModel> inventory;
-        Tree<Drug> guide;
+        public Tree<Drug> guide;
         private Singleton()
         {
             orders = new DoubleLinkedList<Cart>();
-            orders = new DoubleLinkedList<Cart>();
+            inventory = new DoubleLinkedList<PharmacyModel>();
             guide = new Tree<Drug>();
         }
 

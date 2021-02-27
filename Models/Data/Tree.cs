@@ -19,18 +19,18 @@ namespace L2_DAVH_AFPE.Models.Data
 
         internal TreeNode<T> Root { get => root; set => root = value; }
 
-        public TreeNode<T> Insert(T newvalue, TreeNode<T> pNode, Func<T, bool> Comparer)
+        public TreeNode<T> Insert(T newvalue, TreeNode<T> pNode, Func<T, int> Comparer)
         {
             TreeNode<T> temp = null;
 
             if (pNode == null)
-            { 
+            {
+                
                 temp = new TreeNode<T>(newvalue);
-
                 return temp;
             }
 
-            if (Comparer.Invoke(newvalue)) {
+            if (Comparer.Invoke(newvalue) > 0) {
                 pNode.left = Insert(newvalue, pNode.left, Comparer);
             }
             else
@@ -40,22 +40,25 @@ namespace L2_DAVH_AFPE.Models.Data
             return pNode;
         }
 
-        //public TreeNode<T> SearchParent(TreeNode<T> node, TreeNode<T> parent)
-        //{
-        //    TreeNode<T> temp = null;
-        //    if(node == null || parent == null)
-        //    {
-        //        return null;
-        //    }
+        public TreeNode<T> SearchParent(TreeNode<T> node, TreeNode<T> parent, Func<T, int> Comparer)
+        {
+            TreeNode<T> temp = null;
+            if (node == null || parent == null)
+            {
+                return null;
+            }
 
-        //    if(parent.right == node || parent.left == node)
-        //    {
-        //        return parent;
-        //    }
+            if (parent.right == node || parent.left == node)
+            {
+                return parent;
+            }
 
-        //    if
+            if(Comparer.Invoke(node.value) > 0)
+            {
 
-        //}
+            }
+
+        }
 
         public void Delete()
         {
