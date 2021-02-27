@@ -39,5 +39,27 @@ namespace L2_DAVH_AFPE.Models.Data
             }
             return pNode;
         }
+
+        //public TreeNode<T> SearchParent(TreeNode<T> node, TreeNode<T> parent)
+        //{
+        //    TreeNode<T> temp = null;
+        //    if(node == null || parent == null)
+        //    {
+        //        return null;
+        //    }
+
+        //    if(parent.right == node || parent.left == node)
+        //    {
+        //        return parent;
+        //    }
+
+        //    if
+
+        //}
+
+        public void Delete()
+        {
+
+        }
     }
 }

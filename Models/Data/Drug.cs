@@ -10,12 +10,11 @@ namespace L2_DAVH_AFPE.Models.Data
         public int numberline { get; set; }
         public string name { get; set; }
 
-        public int quantity { get; set; }
 
         public int CompareTo(object obj)
         {
-            var comparer = ((Drug)obj).quantity;
-            return comparer < quantity ? -1 : 1;
+            var comparer = ((Drug)obj).name;
+            return comparer == name ? 1 : -1;
         }
 
     }
