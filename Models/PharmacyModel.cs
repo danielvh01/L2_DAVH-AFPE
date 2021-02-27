@@ -18,6 +18,6 @@ namespace L2_DAVH_AFPE.Models
 
         public double Price { get; set; }
 
-        public bool Available { get; set; }
+        public int  Quantity { get; set; }
     }
 }
