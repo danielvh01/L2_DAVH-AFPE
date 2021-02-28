@@ -64,32 +64,52 @@ namespace L2_DAVH_AFPE.Models.Data
             return temp;
         }
 
-        public void Delete(TreeNode<T> node, T value, Func<T, int> Comparer)
+        public TreeNode<T> Delete(TreeNode<T> node, T value, Func<T, int> Comparer)
         {
             if(node == null)
             {
-                return;
+                return node;
             }
             if(Comparer.Invoke(node.value) < 0)
             {
-                Delete(node.left, value, Comparer);
+                node.left = Delete(node.left, value, Comparer);
             }
             else if(Comparer.Invoke(node.value) > 0)
             {
-                Delete(node.left, value, Comparer);
+                node.right = Delete(node.left, value, Comparer);
             }
             else
             {
                 if(node.left == null && node.right == null)
                 {
                     node = null;
+                    return node;
                 }
                 else if(node.left == null)
                 {
                     TreeNode<T> parent = SearchParent(node, root, Comparer);
-                    parent.right
+                    parent.right = node.right;
+                    return node;
+                }
+                else if(node.right == null)
+                {
+                    TreeNode<T> parent = SearchParent(node, root, Comparer);
+                    parent.left = node.left;
+                    return node;
+                }
+                else
+                {
+                    TreeNode<T> minimo = null;
+                    while(node.left != null)
+                    {
+                        minimo = node.left;
+                    }
+                    node.value = minimo.value;
+                    node.right = Delete(node.right,minimo.value, Comparer);
+                    return node;
                 }
             }
+            return node;
         }
     }
 }
