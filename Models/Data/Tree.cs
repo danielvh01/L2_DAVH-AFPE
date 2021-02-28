@@ -53,16 +53,35 @@ namespace L2_DAVH_AFPE.Models.Data
                 return parent;
             }
 
-            if(Comparer.Invoke(node.value) > 0)
+            if (Comparer.Invoke(node.value) < 0 && parent.left != null)
+            {
+                temp = SearchParent(node, parent.left, Comparer);
+            }
+            if(Comparer.Invoke(node.value) > 0 && parent.right != null)
+            {
+                temp = SearchParent(node, parent.right, Comparer); 
+            }
+            return temp;
+        }
+
+        public void Delete(TreeNode<T> node, T value, Func<T, int> Comparer)
+        {
+            if(node == null)
+            {
+                return;
+            }
+            if(Comparer.Invoke(node.value) < 0)
+            {
+                Delete(node.left, value, Comparer);
+            }
+            else if(Comparer.Invoke(node.value) > 0)
+            {
+                Delete(node.left, value, Comparer);
+            }
+            else
             {
 
             }
-
-        }
-
-        public void Delete()
-        {
-
         }
     }
 }
