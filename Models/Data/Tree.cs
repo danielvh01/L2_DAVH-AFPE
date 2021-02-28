@@ -40,25 +40,25 @@ namespace L2_DAVH_AFPE.Models.Data
             return pNode;
         }
 
-        public TreeNode<T> SearchParent(TreeNode<T> node, TreeNode<T> parent, Func<T, int> Comparer)
-        {
-            TreeNode<T> temp = null;
-            if (node == null || parent == null)
-            {
-                return null;
-            }
+        //public TreeNode<T> SearchParent(TreeNode<T> node, TreeNode<T> parent, Func<T, int> Comparer)
+        //{
+        //    TreeNode<T> temp = null;
+        //    if (node == null || parent == null)
+        //    {
+        //        return null;
+        //    }
 
-            if (parent.right == node || parent.left == node)
-            {
-                return parent;
-            }
+        //    if (parent.right == node || parent.left == node)
+        //    {
+        //        return parent;
+        //    }
 
-            if(Comparer.Invoke(node.value) > 0)
-            {
+        //    if(Comparer.Invoke(node.value) > 0)
+        //    {
 
-            }
+        //    }
 
-        }
+        //}
 
         public void Delete()
         {
