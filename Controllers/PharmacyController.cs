@@ -129,21 +129,28 @@ namespace L2_DAVH_AFPE.Controllers
 
                 string[] Drugss;
                 while (!txtfldprsr.EndOfData) {
-                    Drugss = txtfldprsr.ReadFields();
-                    var newDrug = new Models.PharmacyModel
+                    try
                     {
-                        Id = int.Parse(Drugss[0]),
-                        Name = Drugss[1].ToString(),
-                        Description = Drugss[2].ToString(),
-                        Production_Factory = Drugss[3].ToString(),
-                        Price = double.Parse(Drugss[4].Substring(1)),
-                        Quantity = int.Parse(Drugss[5])
+                        Drugss = txtfldprsr.ReadFields();
+                        var newDrug = new Models.PharmacyModel
+                        {
+                            Id = int.Parse(Drugss[0]),
+                            Name = Drugss[1].ToString(),
+                            Description = Drugss[2].ToString(),
+                            Production_Factory = Drugss[3].ToString(),
+                            Price = double.Parse(Drugss[4].Substring(1)),
+                            Quantity = int.Parse(Drugss[5])
                         };
-                    Singleton.Instance.inventory.InsertAtEnd(newDrug);
-                    cont++;
-                    if(newDrug.Quantity > 0)
+                        Singleton.Instance.inventory.InsertAtEnd(newDrug);
+                        cont++;
+                        if (newDrug.Quantity > 0)
+                        {
+                            Singleton.Instance.guide.Insert(new Drug { name = Drugss[1], numberline = cont }, Singleton.Instance.guide.Root, x => x.name.CompareTo(Singleton.Instance.guide.Root.value.name));
+                        }
+                    }
+                    catch(Exception e)
                     {
-                        Singleton.Instance.guide.Insert(new Drug { name = Drugss[1], numberline = cont }, Singleton.Instance.guide.Root, x => x.name.CompareTo(Singleton.Instance.guide.Root.value.name));
+                        
                     }
                 }
 
