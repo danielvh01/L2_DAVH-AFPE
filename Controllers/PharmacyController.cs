@@ -47,7 +47,14 @@ namespace L2_DAVH_AFPE.Controllers
         {
             try
             {
-
+                var newOrder = new Cart
+                {
+                    clientName = collection["clientName"],
+                    NIT = collection["NIT"],
+                    address = collection["address"],
+                    amount = double.Parse(collection["amount"]),
+                    products = collection["product"]
+                };
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -105,7 +112,15 @@ namespace L2_DAVH_AFPE.Controllers
 
         public void Resuply()
         {
-
+            for(int i = 0; i < Models.Data.Singleton.Instance.inventory.Length; i++)
+            {
+                PharmacyModel item = Models.Data.Singleton.Instance.inventory.Get(i);
+                if (item.Quantity == 0)
+                {
+                    Random r = new Random();
+                    item.Quantity = r.Next(1, 15);
+                }
+            }
         }
 
         [HttpPost]
@@ -132,7 +147,7 @@ namespace L2_DAVH_AFPE.Controllers
                     try
                     {
                         Drugss = txtfldprsr.ReadFields();
-                        var newDrug = new Models.PharmacyModel
+                        var newDrug = new PharmacyModel
                         {
                             Id = int.Parse(Drugss[0]),
                             Name = Drugss[1].ToString(),
