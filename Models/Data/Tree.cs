@@ -5,32 +5,32 @@ using System.Threading.Tasks;
 
 namespace L2_DAVH_AFPE.Models.Data
 {
-    public class Tree<T>
+    public class Tree<T> where T : IComparable
     {
-        //public TreeNode<T> Root { get; set; }
-
-        private TreeNode<T> root;
+        public TreeNode<T> Root { get; set; }
 
         public int lenght = 0;
         public Tree()
         {
-            root = null;
+            Root = null;
         }
 
-        internal TreeNode<T> Root { get => root; set => root = value; }
 
         public TreeNode<T> Insert(T newvalue, TreeNode<T> pNode, Func<T, int> Comparer)
         {
             TreeNode<T> temp = null;
-
             if (pNode == null)
             {                
                 temp = new TreeNode<T>(newvalue);
+                if(lenght == 0)
+                {
+                    Root = temp;
+                }
                 lenght++;
                 return temp;
             }
 
-            if (Comparer.Invoke(newvalue) > 0) {
+            if (Comparer.Invoke(newvalue) < 0) {
                 pNode.left = Insert(newvalue, pNode.left, Comparer);
             }
             else
@@ -64,7 +64,7 @@ namespace L2_DAVH_AFPE.Models.Data
             return temp;
         }
 
-        public TreeNode<T> Delete(TreeNode<T> node, T value, Func<T, int> Comparer)
+        public TreeNode<T> Delete(TreeNode<T> node, Func<T, int> Comparer)
         {
             if(node == null)
             {
@@ -72,11 +72,11 @@ namespace L2_DAVH_AFPE.Models.Data
             }
             if(Comparer.Invoke(node.value) < 0)
             {
-                node.left = Delete(node.left, value, Comparer);
+                node.left = Delete(node.left, Comparer);
             }
             else if(Comparer.Invoke(node.value) > 0)
             {
-                node.right = Delete(node.left, value, Comparer);
+                node.right = Delete(node.left, Comparer);
             }
             else
             {
@@ -87,13 +87,13 @@ namespace L2_DAVH_AFPE.Models.Data
                 }
                 else if(node.left == null)
                 {
-                    TreeNode<T> parent = SearchParent(node, root, Comparer);
+                    TreeNode<T> parent = SearchParent(node, Root, Comparer);
                     parent.right = node.right;
                     return node;
                 }
                 else if(node.right == null)
                 {
-                    TreeNode<T> parent = SearchParent(node, root, Comparer);
+                    TreeNode<T> parent = SearchParent(node, Root, Comparer);
                     parent.left = node.left;
                     return node;
                 }
@@ -105,7 +105,7 @@ namespace L2_DAVH_AFPE.Models.Data
                         minimo = node.left;
                     }
                     node.value = minimo.value;
-                    node.right = Delete(node.right,minimo.value, Comparer);
+                    node.right = Delete(node.right, x => x.CompareTo(minimo));
                     return node;
                 }
             }

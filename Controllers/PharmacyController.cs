@@ -37,8 +37,10 @@ namespace L2_DAVH_AFPE.Controllers
         // GET: PharmacyController/Create
         public ActionResult Create()
         {
-            
-            Singleton.Instance.Traverse(Singleton.Instance.guide.Root);            
+            if (Singleton.Instance.options.Length == 0)
+            {
+                Singleton.Instance.Traverse(Singleton.Instance.guide.Root);
+            }
             return View();
         }
 
@@ -47,26 +49,23 @@ namespace L2_DAVH_AFPE.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)
         {
-            
+
             try
             {
-                if (true)
+                var newOrder = new Cart
                 {
-
-                    var newOrder = new Cart
-                    {
-                        clientName = collection["clientName"],
-                        NIT = collection["NIT"],
-                        address = collection["address"],
-                        amount = double.Parse(collection["amount"]),
-                        products = collection["product"]
-                    };
-                    return RedirectToAction(nameof(Index));
-                }
-                else
+                    clientName = collection["clientName"],
+                    NIT = collection["NIT"],
+                    address = collection["address"],
+                    amount = double.Parse(collection["amount"]),
+                    products = collection["product"]
+                };
+                Singleton.Instance.inventory.Get(x => x.Name.CompareTo(collection["product"])).Quantity--;
+                if (Singleton.Instance.inventory.Get(x => x.Name.CompareTo(collection["product"])).Quantity == 0)
                 {
-                    return View();
+                    Singleton.Instance.guide.Delete(Singleton.Instance.guide.Root, x => x.name.CompareTo(collection["product"]));
                 }
+                return RedirectToAction(nameof(Index));
             }
             catch
             {
@@ -119,6 +118,11 @@ namespace L2_DAVH_AFPE.Controllers
 
         public ActionResult Import()
         {
+            return View();
+        }
+        public ActionResult ViewTree()
+        {
+            Singleton.Instance.PrintTree(Singleton.Instance.guide.Root);
             return View();
         }
 

@@ -1,9 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System;
+using System.Threading.Tasks;
 
 namespace L2_DAVH_AFPE.Models.Data
 {
-
+    
     public class DoubleLinkedList<T> : IEnumerable<T>
     {
         Node<T> First;
@@ -213,6 +216,23 @@ namespace L2_DAVH_AFPE.Models.Data
                         return default;
                     }
                 }
+            }
+            else
+            {
+                return default;
+            }
+        }
+        
+        public T Get(Func<T, int> Comparer)
+        {
+            if (Length > 0)
+            {
+                var temp = First;
+                while(Comparer.Invoke(temp.value) != 0)
+                {
+                    temp = temp.next;
+                }
+                return temp.value;
             }
             else
             {
