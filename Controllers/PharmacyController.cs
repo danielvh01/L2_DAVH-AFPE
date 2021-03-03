@@ -37,6 +37,8 @@ namespace L2_DAVH_AFPE.Controllers
         // GET: PharmacyController/Create
         public ActionResult Create()
         {
+            
+            Singleton.Instance.Traverse(Singleton.Instance.guide.Root);            
             return View();
         }
 
@@ -45,22 +47,32 @@ namespace L2_DAVH_AFPE.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)
         {
+            
             try
             {
-                var newOrder = new Cart
+                if (true)
                 {
-                    clientName = collection["clientName"],
-                    NIT = collection["NIT"],
-                    address = collection["address"],
-                    amount = double.Parse(collection["amount"]),
-                    products = collection["product"]
-                };
-                return RedirectToAction(nameof(Index));
+
+                    var newOrder = new Cart
+                    {
+                        clientName = collection["clientName"],
+                        NIT = collection["NIT"],
+                        address = collection["address"],
+                        amount = double.Parse(collection["amount"]),
+                        products = collection["product"]
+                    };
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    return View();
+                }
             }
             catch
             {
                 return View();
             }
+            
         }
 
         // GET: PharmacyController/Edit/5
@@ -169,11 +181,9 @@ namespace L2_DAVH_AFPE.Controllers
                     }
                 }
 
-
-
             }
             return RedirectToAction(nameof(Index));
         }
-
+        
     }
 }

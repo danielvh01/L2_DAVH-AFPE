@@ -9,9 +9,9 @@ namespace L2_DAVH_AFPE.Models.Data
     {
         //public TreeNode<T> Root { get; set; }
 
-        private TreeNode<T> root;        
-        
+        private TreeNode<T> root;
 
+        public int lenght = 0;
         public Tree()
         {
             root = null;
@@ -24,9 +24,9 @@ namespace L2_DAVH_AFPE.Models.Data
             TreeNode<T> temp = null;
 
             if (pNode == null)
-            {
-                
+            {                
                 temp = new TreeNode<T>(newvalue);
+                lenght++;
                 return temp;
             }
 
@@ -111,5 +111,8 @@ namespace L2_DAVH_AFPE.Models.Data
             }
             return node;
         }
+
+
+        
     }
 }

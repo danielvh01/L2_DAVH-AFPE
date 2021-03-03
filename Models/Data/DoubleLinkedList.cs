@@ -61,21 +61,23 @@ namespace L2_DAVH_AFPE.Models.Data
                 {
                     InsertAtStart(value);
                 }
-                else if (Position >= Length)
+                else if (Position >= Length -1)
                 {
                     InsertAtEnd(value);
                 }
                 else
                 {
                     Node<T> pretemp = First;
-                    while (pretemp != null || Position - 1 < Length)
+                    int cont = 0;
+                    while (cont  < Position -1)
                     {
                         pretemp = pretemp.next;
-                    }
+                        cont++;
+                    }                   
                     newNode.next = pretemp.next;
                     pretemp.next.prev = newNode;
+                    pretemp.next = newNode;                    
                     newNode.prev = pretemp;
-                    pretemp.next = newNode;
                     Length++;
                 }
             }
@@ -117,7 +119,7 @@ namespace L2_DAVH_AFPE.Models.Data
         {
             if (Length > 0)
             {
-                if (Length <= 1)
+                if (Length == 1)
                 {
                     First = null;
                     End = null;
@@ -129,7 +131,7 @@ namespace L2_DAVH_AFPE.Models.Data
                     {
                         DeteleAtStart();
                     }
-                    else if (position >= Length)
+                    else if (position >= Length -1)
                     {
                         DeleteAtEnd();
                     }
@@ -203,7 +205,13 @@ namespace L2_DAVH_AFPE.Models.Data
                         node = node.next;
                         cont++;
                     }
-                    return node.value;
+                    if (node != null)
+                    {
+                        return node.value;
+                    }
+                    else {
+                        return default;
+                    }
                 }
             }
             else

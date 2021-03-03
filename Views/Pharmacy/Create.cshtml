@@ -34,12 +34,11 @@
             </div>
             <div class="form-group">
                 <select class="form-select" id="product">
-                    @foreach(var item in L2_DAVH_AFPE.Models.Data.Singleton.Instance.inventory)
+                    @foreach(var item in L2_DAVH_AFPE.Models.Data.Singleton.Instance.options)
                     {
-                        if(item.Quantity > 0)
-                        {
-                            <option value="item.Name">@Html.DisplayFor(modelItem => item.Name)</option>
-                        }
+                        
+                        <option value="item.Name">@Html.DisplayFor(modelItem => item)</option>
+                        
                     }
                 </select>
             </div>

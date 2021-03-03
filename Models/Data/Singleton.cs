@@ -8,6 +8,7 @@ namespace L2_DAVH_AFPE.Models.Data
 
     public sealed class Singleton
     {
+        public DoubleLinkedList<string> options = new DoubleLinkedList<string>();
         private readonly static Singleton _instance = new Singleton();
         public DoubleLinkedList<Cart> orders;
         public DoubleLinkedList<PharmacyModel> inventory;
@@ -24,6 +25,23 @@ namespace L2_DAVH_AFPE.Models.Data
             get
             {
                 return _instance;
+            }
+        }
+
+        public void Traverse(TreeNode<Drug> node)
+        {
+            if (node == null)
+            {
+                return;
+            }
+            if (node.left != null)
+            {
+                Traverse(node.left);
+            }
+            options.Insert(node.value.name, (options.Length - 1));
+            if (node.right != null)
+            {
+                Traverse(node.right);
             }
         }
 
