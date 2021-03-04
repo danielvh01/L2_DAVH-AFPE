@@ -58,10 +58,11 @@ namespace L2_DAVH_AFPE.Controllers
                     NIT = collection["NIT"],
                     address = collection["address"],
                     amount = double.Parse(collection["amount"]),
-                    products = collection["product"]
+                    product = collection["product"]
                 };
-                Singleton.Instance.inventory.Get(x => x.Name.CompareTo(collection["product"])).Quantity--;
-                if (Singleton.Instance.inventory.Get(x => x.Name.CompareTo(collection["product"])).Quantity == 0)
+                int idx = Singleton.Instance.guide.Find(new Drug { name = collection["product"], numberline = 0 }, Singleton.Instance.guide.Root).value.numberline;
+                Singleton.Instance.inventory.Get(idx).Quantity--;
+                if (Singleton.Instance.inventory.Get(idx).Quantity == 0)
                 {
                     Singleton.Instance.guide.Delete(Singleton.Instance.guide.Root, x => x.name.CompareTo(collection["product"]));
                 }
@@ -118,7 +119,14 @@ namespace L2_DAVH_AFPE.Controllers
 
         public ActionResult Import()
         {
-            return View();
+            if(!Singleton.Instance.fileUpload)
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction(nameof(Index));
+            }
         }
         public ActionResult ViewTree()
         {
@@ -135,6 +143,7 @@ namespace L2_DAVH_AFPE.Controllers
                 {
                     Random r = new Random();
                     item.Quantity = r.Next(1, 15);
+                    Singleton.Instance.guide.Insert(new Drug { name = item.Name, numberline = i }, Singleton.Instance.guide.Root);
                 }
             }
         }
@@ -176,7 +185,7 @@ namespace L2_DAVH_AFPE.Controllers
                         cont++;
                         if (newDrug.Quantity > 0)
                         {
-                            Singleton.Instance.guide.Insert(new Drug { name = Drugss[1], numberline = cont }, Singleton.Instance.guide.Root, x => x.name.CompareTo(Singleton.Instance.guide.Root.value.name));
+                            Singleton.Instance.guide.Insert(new Drug { name = Drugss[1], numberline = cont }, Singleton.Instance.guide.Root);
                         }
                     }
                     catch(Exception e)

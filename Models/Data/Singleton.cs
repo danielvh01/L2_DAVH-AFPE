@@ -13,6 +13,7 @@ namespace L2_DAVH_AFPE.Models.Data
         public DoubleLinkedList<Cart> orders;
         public DoubleLinkedList<PharmacyModel> inventory;
         public Tree<Drug> guide;
+        public bool fileUpload = false;
         public string tree = "";
         private Singleton()
         {
@@ -35,14 +36,14 @@ namespace L2_DAVH_AFPE.Models.Data
             {
                 return;
             }
-            if (node.left != null)
-            {
-                Traverse(node.left);
-            }
-            options.InsertAtEnd(node.value.name);
             if (node.right != null)
             {
                 Traverse(node.right);
+            }
+            options.InsertAtEnd(node.value.name);
+            if (node.left != null)
+            {
+                Traverse(node.left);
             }
         }
 
@@ -52,15 +53,15 @@ namespace L2_DAVH_AFPE.Models.Data
             {
                 return;
             }
-            if (node.left != null)
-            {
-                Traverse(node.left);
-            }
-            tree += node.value.name + "\n";
-            
             if (node.right != null)
             {
-                Traverse(node.right);
+                PrintTree(node.right);
+            }
+            tree += node.value.name + " Numberline: " + node.value.numberline + "\r\n";
+            
+            if (node.left != null)
+            {
+                PrintTree(node.left);
             }
         }
 

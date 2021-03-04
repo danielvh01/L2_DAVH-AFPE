@@ -11,6 +11,6 @@ namespace L2_DAVH_AFPE.Models
         public string NIT { get; set; }
         public string address { get; set; }
         public double amount { get; set; }
-        public string products { get; set; }
+        public string product { get; set; }
     }
 }

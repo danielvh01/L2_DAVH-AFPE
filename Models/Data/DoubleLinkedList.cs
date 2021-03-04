@@ -222,23 +222,7 @@ namespace L2_DAVH_AFPE.Models.Data
                 return default;
             }
         }
-        
-        public T Get(Func<T, int> Comparer)
-        {
-            if (Length > 0)
-            {
-                var temp = First;
-                while(Comparer.Invoke(temp.value) != 0)
-                {
-                    temp = temp.next;
-                }
-                return temp.value;
-            }
-            else
-            {
-                return default;
-            }
-        }
+       
 
         public IEnumerator<T> GetEnumerator()
         {

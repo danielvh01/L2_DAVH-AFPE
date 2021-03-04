@@ -16,7 +16,7 @@ namespace L2_DAVH_AFPE.Models.Data
         }
 
 
-        public TreeNode<T> Insert(T newvalue, TreeNode<T> pNode, Func<T, int> Comparer)
+        public TreeNode<T> Insert(T newvalue, TreeNode<T> pNode)
         {
             TreeNode<T> temp = null;
             if (pNode == null)
@@ -29,18 +29,36 @@ namespace L2_DAVH_AFPE.Models.Data
                 lenght++;
                 return temp;
             }
-
-            if (Comparer.Invoke(newvalue) < 0) {
-                pNode.left = Insert(newvalue, pNode.left, Comparer);
+            if (newvalue.CompareTo(pNode.value) < 0) {
+                pNode.left = Insert(newvalue, pNode.left);
             }
             else
             {
-                pNode.right = Insert(newvalue, pNode.right, Comparer);
+                pNode.right = Insert(newvalue, pNode.right);
             }
             return pNode;
         }
+        public TreeNode<T> Find(T value, TreeNode<T> node)
+        {
+            if (node != null)
+            {
+                if (value.CompareTo(node.value) == 0)
+                {
+                    return node;
+                }
+                if (value.CompareTo(node.value) < 0)
+                {
+                    return Find(value, node.left);
+                }
+                else
+                {
+                    return Find(value, node.right);
+                }
+            }
 
-        public TreeNode<T> SearchParent(TreeNode<T> node, TreeNode<T> parent, Func<T, int> Comparer)
+            return null;
+        }
+        public TreeNode<T> SearchParent(TreeNode<T> node, TreeNode<T> parent)
         {
             TreeNode<T> temp = null;
             if (node == null || parent == null)
@@ -53,13 +71,13 @@ namespace L2_DAVH_AFPE.Models.Data
                 return parent;
             }
 
-            if (Comparer.Invoke(node.value) < 0 && parent.left != null)
+            if (parent.value.CompareTo(node.value) < 0 && parent.left != null)
             {
-                temp = SearchParent(node, parent.left, Comparer);
+                temp = SearchParent(node, parent.left);
             }
-            if(Comparer.Invoke(node.value) > 0 && parent.right != null)
+            if(parent.value.CompareTo(node.value) > 0 && parent.right != null)
             {
-                temp = SearchParent(node, parent.right, Comparer); 
+                temp = SearchParent(node, parent.right); 
             }
             return temp;
         }
@@ -87,13 +105,13 @@ namespace L2_DAVH_AFPE.Models.Data
                 }
                 else if(node.left == null)
                 {
-                    TreeNode<T> parent = SearchParent(node, Root, Comparer);
+                    TreeNode<T> parent = SearchParent(node, Root);
                     parent.right = node.right;
                     return node;
                 }
                 else if(node.right == null)
                 {
-                    TreeNode<T> parent = SearchParent(node, Root, Comparer);
+                    TreeNode<T> parent = SearchParent(node, Root,);
                     parent.left = node.left;
                     return node;
                 }
