@@ -88,34 +88,38 @@ namespace L2_DAVH_AFPE.Models.Data
 
         void DeteleAtStart()
         {
-            if (Length <= 1)
+            if(Length > 0)
             {
-                First = null;
-                End = null;
+                if (Length == 1)
+                {
+                    First = null;
+                    End = null;
+                }
+                else
+                {
+                    First = First.next;
+                    First.prev = null;
+                }
+                Length--;
             }
-            else
-            {
-                First = First.next;
-                First.prev = null;
-            }
-            Length--;
         }
 
         void DeleteAtEnd()
         {
-
-            if (Length <= 1)
+            if (Length > 0)
             {
-                First = null;
-                End = null;
+                if (Length == 1)
+                {
+                    First = null;
+                    End = null;
+                }
+                else
+                {
+                    End = End.prev;
+                    End.next = null;
+                }
+                Length--;
             }
-            else
-            {
-                Node<T> node = First;
-                End.prev.next = null;
-                End = End.prev;
-            }
-            Length--;
         }
 
         public void Delete(int position)
@@ -223,6 +227,31 @@ namespace L2_DAVH_AFPE.Models.Data
             }
         }
        
+        public int GetPositionOf(T value)
+        {
+            Node<T> temp = First;
+            int cont = 0;
+            while (temp != null && temp.value.CompareTo(value) < 0)
+            {
+                temp = temp.next;
+                cont++;
+            }
+            if (temp != null)
+            {
+                if (temp.value.CompareTo(value) == 0)
+                {
+                    return cont;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+            else
+            {
+                return -1;
+            }
+        }
 
         public T Find(T value)
         {

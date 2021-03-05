@@ -62,21 +62,30 @@ namespace L2_DAVH_AFPE.Models.Data
         public TreeNode<T> SearchParent(TreeNode<T> node, TreeNode<T> parent)
         {
             TreeNode<T> temp = null;
-            if (node == null || parent == null)
+            if (node == null)
             {
                 return null;
             }
-
-            if (parent.right == node || parent.left == node)
+            if (parent.left != null)
             {
-                return parent;
+                if (parent.left.value.CompareTo(node.value) == 0)
+                {
+                    return parent;
+                }
+            }
+            if (parent.right != null)
+            {
+                if (parent.right.value.CompareTo(node.value) == 0)
+                {
+                    return parent;
+                }
             }
 
-            if (parent.value.CompareTo(node.value) < 0 && parent.left != null)
+            if (node.value.CompareTo(parent.value) < 0 && parent.left != null)
             {
                 temp = SearchParent(node, parent.left);
             }
-            if(parent.value.CompareTo(node.value) > 0 && parent.right != null)
+            if(node.value.CompareTo(parent.value) > 0 && parent.right != null)
             {
                 temp = SearchParent(node, parent.right); 
             }
@@ -99,51 +108,36 @@ namespace L2_DAVH_AFPE.Models.Data
             }
             else
             {
-                if(node.left == null && node.right == null)
+                if (node.left == null)
                 {
-                    node = null;
-                    return node;
+                    return node.right;
                 }
-                else if(node.left == null)
+                else if (node.right == null)
                 {
-                    TreeNode<T> parent = SearchParent(node, Root);
-                    parent.right = node.right;
-                    return node;
-                }
-                else if(node.right == null)
-                {
-                    TreeNode<T> parent = SearchParent(node, Root);
-                    parent.left = node.left;
-                    return node;
+                    return node.left;
                 }
                 else
                 {
-                    TreeNode<T> minimo = null;
-                    while(node.left != null)
-                    {
-                        minimo = node.left;
-                    }
-                    node.value = minimo.value;
-                    node.right = Delete(node.right, minimo.value);
-                    return node;
+                    node.value = FindMinimum(node.right).value;
+                    node.right = Delete(node.right, node.value);
                 }
             }
             return node;
         }
 
-        public int FindMinimum(TreeNode<T> node)
+        public TreeNode<T> FindMinimum(TreeNode<T> node)
         {
             if (node == null)
             {
-                return 0;
+                return default;
             }
             Work = node;
-            int minimum = Work.value;
+            TreeNode<T> minimum = Work;
 
             while (Work.left != null)
             {
                 Work = Work.left;
-                minimum = Work.value;
+                minimum = Work;
             }
             return minimum;
 
