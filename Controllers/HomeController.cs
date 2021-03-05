@@ -27,6 +27,10 @@ namespace L2_DAVH_AFPE.Controllers
         {
             return View();
         }
+        public IActionResult IndexPharmacy()
+        {
+            return RedirectToAction("Import", ("Pharmacy"));
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
