@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace L2_DAVH_AFPE.Models.Data
 {
     
-    public class DoubleLinkedList<T> : IEnumerable<T>
+    public class DoubleLinkedList<T> : IEnumerable<T> where T : IComparable
     {
         Node<T> First;
         Node<T> End;
@@ -203,7 +203,7 @@ namespace L2_DAVH_AFPE.Models.Data
                 {
                     Node<T> node = First;
                     int cont = 0;
-                    while (node != null && cont < position)
+                    while (node != null && cont < position - 1)
                     {
                         node = node.next;
                         cont++;
@@ -224,6 +224,29 @@ namespace L2_DAVH_AFPE.Models.Data
         }
        
 
+        public T Find(T value)
+        {
+            Node<T> temp = First;
+            while(temp != null && temp.value.CompareTo(value) < 0)
+            {
+                temp = temp.next;
+            }
+            if (temp != null)
+            {
+                if (temp.value.CompareTo(value) == 0)
+                {
+                    return temp.value;
+                }
+                else
+                {
+                    return default;
+                }
+            }
+            else
+            {
+                return default;
+            }
+        }
         public IEnumerator<T> GetEnumerator()
         {
             var node = First;

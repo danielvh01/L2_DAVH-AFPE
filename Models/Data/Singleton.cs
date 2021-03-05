@@ -29,6 +29,10 @@ namespace L2_DAVH_AFPE.Models.Data
                 return _instance;
             }
         }
+        public string getPrice(string product)
+        {
+            return "$" + Instance.inventory.Get(Instance.guide.Find(new Drug { name = product, numberline = 0 }, guide.Root).value.numberline).Price;
+        }
 
         public void Traverse(TreeNode<Drug> node)
         {
@@ -40,7 +44,7 @@ namespace L2_DAVH_AFPE.Models.Data
             {
                 Traverse(node.right);
             }
-            options.InsertAtEnd(node.value.name);
+            options.InsertAtEnd(node.value.name + " - " + getPrice(node.value.name));
             if (node.left != null)
             {
                 Traverse(node.left);

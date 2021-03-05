@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace L2_DAVH_AFPE.Models
 {
-    public class PharmacyModel
+    public class PharmacyModel : IComparable
     {
         public int Id { get; set; }
 
@@ -19,5 +19,12 @@ namespace L2_DAVH_AFPE.Models
         public double Price { get; set; }
 
         public int  Quantity { get; set; }
+
+        public int CompareTo(object obj)
+        {
+            var comparer = ((PharmacyModel)obj).Name;
+            return comparer.CompareTo(Name);
+        }
     }
+
 }

@@ -16,7 +16,7 @@ namespace L2_DAVH_AFPE.Controllers
 {
     public class PharmacyController : Controller
     {
-        int cont = 0;
+        
         private readonly IHostingEnvironment hostingEnvironment;
         public PharmacyController(IHostingEnvironment hostingEnvironment)
         {            
@@ -43,7 +43,7 @@ namespace L2_DAVH_AFPE.Controllers
             }
             return View();
         }
-
+        
         // POST: PharmacyController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -57,14 +57,24 @@ namespace L2_DAVH_AFPE.Controllers
                     clientName = collection["clientName"],
                     NIT = collection["NIT"],
                     address = collection["address"],
-                    amount = double.Parse(collection["amount"]),
                     product = collection["product"]
                 };
-                int idx = Singleton.Instance.guide.Find(new Drug { name = collection["product"], numberline = 0 }, Singleton.Instance.guide.Root).value.numberline;
-                Singleton.Instance.inventory.Get(idx).Quantity--;
-                if (Singleton.Instance.inventory.Get(idx).Quantity == 0)
+                string[] a = collection["product"].ToString().Split('-');
+                string name = "";
+                for (int i = 0; i < a.Length - 1; i++)
                 {
-                    Singleton.Instance.guide.Delete(Singleton.Instance.guide.Root, x => x.name.CompareTo(collection["product"]));
+                    name += a[i].Trim();
+                }
+                int b = a.Length - 1;
+                newOrder.amount = double.Parse(a[b].Replace('$', ' ').Trim());
+                Singleton.Instance.orders.InsertAtEnd(newOrder);
+                Drug obj = new Drug { name = name, numberline = 0 };
+                int idx = Singleton.Instance.guide.Find(obj, Singleton.Instance.guide.Root).value.numberline;
+                PharmacyModel x = Singleton.Instance.inventory.Get(idx);
+                x.Quantity--;
+                if (x.Quantity == 0)
+                {
+                    Singleton.Instance.guide.Delete(Singleton.Instance.guide.Root, obj);
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -151,6 +161,7 @@ namespace L2_DAVH_AFPE.Controllers
         [HttpPost]
         public ActionResult Import(FileModel model)
         {
+            int contador = 0;
             if (ModelState.IsValid)
             {
                 string uniqueFileName = null;
@@ -181,11 +192,21 @@ namespace L2_DAVH_AFPE.Controllers
                             Price = double.Parse(Drugss[4].Substring(1)),
                             Quantity = int.Parse(Drugss[5])
                         };
+                        int cant = 0;
+                        while (Singleton.Instance.inventory.Find(newDrug) != null)
+                        {
+                            newDrug.Name += "-" + ++cant;
+                        }
                         Singleton.Instance.inventory.InsertAtEnd(newDrug);
-                        cont++;
+                        contador++;
                         if (newDrug.Quantity > 0)
                         {
-                            Singleton.Instance.guide.Insert(new Drug { name = Drugss[1], numberline = cont }, Singleton.Instance.guide.Root);
+                            int cont = 0;
+                            while(Singleton.Instance.guide.Find(new Drug { name = Drugss[1], numberline = contador }, Singleton.Instance.guide.Root) != null)
+                            {
+                                Drugss[1] += "-" + ++cont;
+                            }
+                            Singleton.Instance.guide.Insert(new Drug { name = Drugss[1], numberline = contador }, Singleton.Instance.guide.Root);
                         }
                     }
                     catch(Exception e)
@@ -197,6 +218,7 @@ namespace L2_DAVH_AFPE.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+
         
     }
 }
