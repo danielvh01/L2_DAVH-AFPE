@@ -143,7 +143,15 @@ namespace L2_DAVH_AFPE.Controllers
             Singleton.Instance.PrintTree(Singleton.Instance.guide.Root);
             return View();
         }
-
+        public ActionResult DownloadFile()
+        {
+            StreamWriter file = new StreamWriter("Guide.txt", true);
+            file.Write(Singleton.Instance.PrintTree(Singleton.Instance.guide.Root));
+            file.Close();
+            byte[] fileBytes = System.IO.File.ReadAllBytes("Guide.txt");
+            string fileName = "Guide.txt";
+            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
+        }
         public ActionResult Download()
         {
             return File(pathito, Singleton.Instance.PrintTree(Singleton.Instance.guide.Root), "reoprt.txt");
