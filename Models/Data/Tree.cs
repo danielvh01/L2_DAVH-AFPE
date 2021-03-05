@@ -8,6 +8,7 @@ namespace L2_DAVH_AFPE.Models.Data
     public class Tree<T> where T : IComparable
     {
         public TreeNode<T> Root { get; set; }
+        public TreeNode<T> Work { get; set; }
 
         public int lenght = 0;
         public Tree()
@@ -130,6 +131,23 @@ namespace L2_DAVH_AFPE.Models.Data
             return node;
         }
 
+        public int FindMinimum(TreeNode<T> node)
+        {
+            if (node == null)
+            {
+                return 0;
+            }
+            Work = node;
+            int minimum = Work.value;
+
+            while (Work.left != null)
+            {
+                Work = Work.left;
+                minimum = Work.value;
+            }
+            return minimum;
+
+        }
 
         
     }
