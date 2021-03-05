@@ -65,11 +65,11 @@ namespace L2_DAVH_AFPE.Models.Data
             }
         }
 
-        public void PrintTree(TreeNode<Drug> node)
+        public string PrintTree(TreeNode<Drug> node)
         {
             if (node == null)
             {
-                return;
+                return "";
             }
             if (node.right != null)
             {
@@ -81,6 +81,7 @@ namespace L2_DAVH_AFPE.Models.Data
             {
                 PrintTree(node.left);
             }
+            return tree;
         }
 
     }
