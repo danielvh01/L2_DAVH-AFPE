@@ -157,6 +157,20 @@ namespace L2_DAVH_AFPE.Controllers
         {
             return File(pathito, Singleton.Instance.PrintTree(Singleton.Instance.guide.Root), "reoprt.txt");
         }
+        public ActionResult Resuply()
+        {
+            for (int i = 0; i < Models.Data.Singleton.Instance.inventory.Length; i++)
+            {
+                PharmacyModel item = Models.Data.Singleton.Instance.inventory.Get(i);
+                if (item.Quantity == 0)
+                {
+                    Random r = new Random();
+                    item.Quantity = r.Next(1, 15);
+                    Singleton.Instance.guide.Insert(new Drug { name = item.Name, numberline = i }, Singleton.Instance.guide.Root);
+                }
+            }
+            return RedirectToAction(nameof(Index));
+        }
 
         [HttpPost]
         public ActionResult Import(FileModel model)
