@@ -30,10 +30,10 @@ namespace L2_DAVH_AFPE.Models.Data
                 lenght++;
                 return temp;
             }
-            if (newvalue.CompareTo(pNode.value) < 0) {
+            if (newvalue.CompareTo(pNode.value) > 0) {
                 pNode.left = Insert(newvalue, pNode.left);
             }
-            else if(newvalue.CompareTo(pNode.value) > 0)
+            else if(newvalue.CompareTo(pNode.value) < 0)
             {
                 pNode.right = Insert(newvalue, pNode.right);
             }
@@ -47,7 +47,7 @@ namespace L2_DAVH_AFPE.Models.Data
                 {
                     return node;
                 }
-                if (value.CompareTo(node.value) < 0)
+                if (value.CompareTo(node.value) > 0)
                 {
                     return Find(value, node.left);
                 }
@@ -81,11 +81,11 @@ namespace L2_DAVH_AFPE.Models.Data
                 }
             }
 
-            if (node.value.CompareTo(parent.value) < 0 && parent.left != null)
+            if (node.value.CompareTo(parent.value) > 0 && parent.left != null)
             {
                 temp = SearchParent(node, parent.left);
             }
-            if(node.value.CompareTo(parent.value) > 0 && parent.right != null)
+            if(node.value.CompareTo(parent.value) < 0 && parent.right != null)
             {
                 temp = SearchParent(node, parent.right); 
             }
@@ -98,11 +98,11 @@ namespace L2_DAVH_AFPE.Models.Data
             {
                 return node;
             }
-            if(value.CompareTo(node.value) < 0)
+            if(value.CompareTo(node.value) > 0)
             {
                 node.left = Delete(node.left, value);
             }
-            else if(value.CompareTo(node.value) > 0)
+            else if(value.CompareTo(node.value) < 0)
             {
                 node.right = Delete(node.right, value);
             }
@@ -127,19 +127,12 @@ namespace L2_DAVH_AFPE.Models.Data
 
         public TreeNode<T> FindMinimum(TreeNode<T> node)
         {
-            if (node == null)
+            TreeNode<T> minv = node;
+            while (node.left != null)
             {
-                return default;
+                node = node.left;
             }
-            Work = node;
-            TreeNode<T> minimum = Work;
-
-            while (Work.left != null)
-            {
-                Work = Work.left;
-                minimum = Work;
-            }
-            return minimum;
+            return minv;
 
         }
 
