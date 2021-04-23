@@ -29,9 +29,10 @@ namespace L2_DAVH_AFPE.Controllers
         }
 
         // GET: PharmacyController/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(int ID)
         {
-            return View();
+            Cart drug = Singleton.Instance.orders.Get(ID);
+            return View(drug);
         }
 
         // GET: PharmacyController/Create
@@ -55,19 +56,20 @@ namespace L2_DAVH_AFPE.Controllers
             {
                 var newOrder = new Cart
                 {
+                    ID = Singleton.Instance.contOrder++,
                     clientName = collection["clientName"],
                     NIT = collection["NIT"],
                     address = collection["address"],
                     product = collection["product"]
                 };
-                string[] a = collection["product"].ToString().Split('-');
+                string[] a = collection["product"].ToString().Split('(');
                 string name = "";
                 for (int i = 0; i < a.Length - 1; i++)
                 {
                     name += a[i].Trim();
                 }
                 int b = a.Length - 1;
-                newOrder.amount = double.Parse(a[b].Replace('$', ' ').Trim());
+                newOrder.amount = double.Parse(a[b].Replace('$', ' ').Replace(')', ' ').Trim());
                 Singleton.Instance.orders.InsertAtEnd(newOrder);
                 Drug obj = new Drug { name = name, numberline = 0 };
                 int idx = Singleton.Instance.guide.Find(obj, Singleton.Instance.guide.Root).value.numberline;
@@ -108,18 +110,20 @@ namespace L2_DAVH_AFPE.Controllers
         }
 
         // GET: PharmacyController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(int ID)
         {
-            return View();
+            Cart drug = Singleton.Instance.orders.Get(ID);
+            return View(drug);
         }
 
-        // POST: PharmacyController/Delete/5
+        // POST: PlayerController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int ID, IFormCollection collection)
         {
             try
             {
+                Singleton.Instance.orders.Delete(ID);
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -211,7 +215,7 @@ namespace L2_DAVH_AFPE.Controllers
                         int cant = 0;
                         while (Singleton.Instance.inventory.Find(newDrug) != null)
                         {
-                            newDrug.Name += "-" + ++cant;
+                            newDrug.Name += "#" + ++cant;
                         }
                         Singleton.Instance.inventory.InsertAtEnd(newDrug);
                         contador++;
@@ -220,7 +224,7 @@ namespace L2_DAVH_AFPE.Controllers
                             int cont = 0;
                             while (Singleton.Instance.guide.Find(new Drug { name = Drugss[1], numberline = contador }, Singleton.Instance.guide.Root) != null)
                             {
-                                Drugss[1] += "-" + ++cont;
+                                Drugss[1] += "#" + ++cont;
                             }
                             Singleton.Instance.guide.Insert(new Drug { name = Drugss[1], numberline = contador }, Singleton.Instance.guide.Root);
                         }

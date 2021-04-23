@@ -7,6 +7,7 @@ namespace L2_DAVH_AFPE.Models
 {
     public class Cart : IComparable
     {
+        public int ID { get; set; }
         public string clientName { get; set; }
         public string NIT { get; set; }
         public string address { get; set; }
