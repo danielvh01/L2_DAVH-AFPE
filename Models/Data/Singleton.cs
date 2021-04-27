@@ -35,32 +35,18 @@ namespace L2_DAVH_AFPE.Models.Data
         }
         public string getPrice(string product)
         {
-            return "$" + Instance.inventory.Get(Instance.guide.Find(new Drug { name = product, numberline = 0 }).numberline).Price;
+            return "$" + Instance.inventory.Get(Instance.guide.Find(x => x.name.CompareTo(product), Singleton.Instance.guide.Root).numberline).Price;
         }
 
         public double totalre()
         {
+            total = 0;
             for (int i = 0; i < orders.Length; i++)
             {
-                total += orders.Get(i).Price;
+                var x = orders.Get(i);
+                total += x.Price * x.Quantity;
             }
             return total;
-        }
-        public void Traverse(TreeNode<Drug> node)
-        {
-            if (node == null)
-            {
-                return;
-            }
-            if (node.left != null)
-            {
-                Traverse(node.left);
-            }
-            options.InsertAtEnd(node.value.name + " ( " + getPrice(node.value.name) + " ) ");
-            if (node.right != null)
-            {
-                Traverse(node.right);
-            }
         }
 
         public void Resuply()

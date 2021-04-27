@@ -36,25 +36,23 @@ namespace L2_DAVH_AFPE.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Search(IFormCollection collection)
         {
-            var c = new Drug
-            {
-                name = collection["Name"]
-            };
-            var x = Singleton.Instance.guide.Find(c);
+            var x = Singleton.Instance.guide.Find(x => x.name.CompareTo(collection["Name"]), Singleton.Instance.guide.Root);
             if (x != null)
             {
                 return RedirectToAction(nameof(DrugOrder),x) ;
             }
-            TempData["testmsg"] = "The drug that you were trying to find does not exist or got out of stock!" + "\n" + "Try to resuply inventory.";
-            return RedirectToAction(nameof(Index));
+            else
+            {
+                TempData["testmsg"] = "The drug that you were trying to find does not exist or got out of stock!" + "\n" + "Try to resuply inventory.";
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         public ActionResult DrugOrder(Drug drug)
         {
-            Drug result = Singleton.Instance.guide.Find(drug);
-            if ( result != null)
+            if ( drug != null)
             {
-                var pharma2 = Singleton.Instance.inventory.Get(result.numberline);
+                var pharma2 = Singleton.Instance.inventory.Get(drug.numberline);
                 pharma2.Quantity = 1;
                 return View(pharma2);
             }
@@ -69,7 +67,6 @@ namespace L2_DAVH_AFPE.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DrugOrder(IFormCollection collection)
         {
-            bool verif = false;
             
                 var newOrder = new PharmacyModel
                 {
@@ -80,25 +77,23 @@ namespace L2_DAVH_AFPE.Controllers
                     Price = double.Parse(collection["Price"].ToString().Replace('$', ' ').Replace(')', ' ').Trim()),
                     Quantity = int.Parse(collection["Quantity"])
                 };
-                Drug obj = new Drug { name = newOrder.Name, numberline = 0 };
-                int idx = Singleton.Instance.guide.Find(obj).numberline;
+                int idx = Singleton.Instance.guide.Find(x => x.name.CompareTo(newOrder.Name), Singleton.Instance.guide.Root).numberline;
                 PharmacyModel x = Singleton.Instance.inventory.Get(idx);
                 if(x.Stock >= newOrder.Quantity)
                 {
-                    for (int i = 0; i < Singleton.Instance.orders.Length; i++)
-                    {                    
-                        if (newOrder.Name == Singleton.Instance.orders.Get(i).Name)
-                        {
-                            verif = true;
-                        }
-                    }                
-                    Singleton.Instance.orders.InsertAtEnd(newOrder);
-                    x.Stock = x.Stock - newOrder.Quantity;
-                    Singleton.Instance.inventory.Delete(idx);
-                    Singleton.Instance.inventory.Insert(x, idx);
+                    if (Singleton.Instance.orders.Exists(a => a.Name == x.Name))
+                    {
+                        var order = Singleton.Instance.orders.Get(idx);
+                        order.ChangeQuantity(order.Quantity + x.Quantity);
+                    }
+                    else
+                    {
+                        Singleton.Instance.orders.InsertAtEnd(newOrder);
+                    }
+                    x.ChangeQuantity(x.Stock - newOrder.Quantity);
                     if (x.Stock == 0)
                     {
-                        Singleton.Instance.guide.Delete(Singleton.Instance.guide.Root, obj);
+                        Singleton.Instance.guide.Delete(Singleton.Instance.guide.Root, new Drug { name = x.Name });
                     }
                     return RedirectToAction(nameof(Index));
                 }
@@ -124,12 +119,7 @@ namespace L2_DAVH_AFPE.Controllers
 
         // GET: PharmacyController/Create
         public ActionResult Create()
-        {    
-            while (Singleton.Instance.options.Length > 0)
-            {
-                Singleton.Instance.options.Delete(0);
-            }
-            Singleton.Instance.Traverse(Singleton.Instance.guide.Root);
+        {
             return View();
         }
 
@@ -141,25 +131,25 @@ namespace L2_DAVH_AFPE.Controllers
 
             try
             {
-                var newOrder = new PharmacyModel
-                {
-                    Id = Singleton.Instance.contOrder++,
-                    Name = collection["Name"],
-                    Description = collection["Description"],
-                    Production_Factory = collection["Production_Factory"],
-                    Price = double.Parse(collection["Price"].ToString().Replace('$', ' ').Replace(')', ' ').Trim()),
-                    Stock = int.Parse(collection["Stock"])
-                };
-                string name = newOrder.Name;
-                Singleton.Instance.orders.InsertAtEnd(newOrder);
-                Drug obj = new Drug { name = name, numberline = 0 };
-                int idx = Singleton.Instance.guide.Find(obj).numberline;
-                PharmacyModel x = Singleton.Instance.inventory.Get(idx);
-                x.Stock--;
-                if (x.Stock == 0)
-                {   
-                    Singleton.Instance.guide.Delete(Singleton.Instance.guide.Root, obj);
-                }
+                //var newOrder = new PharmacyModel
+                //{
+                //    Id = Singleton.Instance.contOrder++,
+                //    Name = collection["Name"],
+                //    Description = collection["Description"],
+                //    Production_Factory = collection["Production_Factory"],
+                //    Price = double.Parse(collection["Price"].ToString().Replace('$', ' ').Replace(')', ' ').Trim()),
+                //    Stock = int.Parse(collection["Stock"])
+                //};
+                //string name = newOrder.Name;
+                //Singleton.Instance.orders.InsertAtEnd(newOrder);
+                //Drug obj = new Drug { name = name, numberline = 0 };
+                //int idx = Singleton.Instance.guide.Find(obj).numberline;
+                //PharmacyModel x = Singleton.Instance.inventory.Get(idx);
+                //x.Stock--;
+                //if (x.Stock == 0)
+                //{   
+                //    Singleton.Instance.guide.Delete(Singleton.Instance.guide.Root, obj);
+                //}
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -307,21 +297,10 @@ namespace L2_DAVH_AFPE.Controllers
                             Price = double.Parse(Drugss[4].Substring(1)),
                             Stock = int.Parse(Drugss[5])
                         };
-                        int cant = 0;
-                        while (Singleton.Instance.inventory.Find(newDrug) != null)
-                        {
-                            newDrug.Name += "#" + ++cant;
-                        }
                         Singleton.Instance.inventory.InsertAtEnd(newDrug);
-                        contador++;
                         if (newDrug.Stock > 0)
                         {
-                            int cont = 0;
-                            while (Singleton.Instance.guide.Find(new Drug { name = Drugss[1], numberline = contador }) != null)
-                            {
-                                Drugss[1] += "#" + ++cont;
-                            }
-                            Singleton.Instance.guide.Insert(new Drug { name = Drugss[1], numberline = contador }, Singleton.Instance.guide.Root);
+                            Singleton.Instance.guide.Insert(new Drug { name = Drugss[1], numberline = ++contador }, Singleton.Instance.guide.Root);
                         }
                     }
                     catch (Exception e)

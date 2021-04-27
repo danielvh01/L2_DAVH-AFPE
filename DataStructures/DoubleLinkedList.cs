@@ -208,7 +208,7 @@ namespace DataStructures
                 {
                     Node<T> node = First;
                     int cont = 0;
-                    while (node != null && cont < position - 1)
+                    while (node != null && cont < position -1)
                     {
                         node = node.next;
                         cont++;
@@ -227,7 +227,23 @@ namespace DataStructures
                 return default;
             }
         }
-       
+        
+        public bool Exists(Func<T,bool> comparer)
+        {
+            Node<T> temp = First;
+            while(temp != null)
+            {
+                if(comparer.Invoke(temp.value))
+                {
+                    return true;
+                }
+                else
+                {
+                    temp = temp.next;
+                }
+            }
+            return false;
+        }
         public int GetPositionOf(T value)
         {
             Node<T> temp = First;

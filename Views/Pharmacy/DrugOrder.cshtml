@@ -23,7 +23,7 @@
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label class="control-label text-xl-left">Stock: @Html.DisplayFor(model => Singleton.Instance.inventory.Get(Singleton.Instance.guide.Find(new Drug { name = model.Name, numberline = 0 }).numberline).Stock)</label>
+                <label class="control-label text-xl-left">Stock: @Html.DisplayFor(model => Singleton.Instance.inventory.Get(Singleton.Instance.guide.Find(x => x.name.CompareTo(model.Name), Singleton.Instance.guide.Root).numberline).Stock)</label>
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>

@@ -39,25 +39,22 @@ namespace DataStructures
             }
             return pNode;
         }
-        public T Find (T value)
-        {
-            return Find(value, Root);
-        }
-        T Find(T value, TreeNode<T> node)
+        
+        public T Find(Func<T, int> comparer, TreeNode<T> node)
         {
             if (node != null)
             {
-                if (value.CompareTo(node.value) == 0)
+                if (comparer.Invoke(node.value) == 0)
                 {
                     return node.value;
                 }
-                if (value.CompareTo(node.value) > 0)
+                if (comparer.Invoke(node.value) > 0)
                 {
-                    return Find(value, node.left);
+                    return Find(comparer, node.left);
                 }
                 else
                 {
-                    return Find(value, node.right);
+                    return Find(comparer, node.right);
                 }
             }
 

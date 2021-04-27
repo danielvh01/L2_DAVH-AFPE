@@ -21,12 +21,11 @@
                 Drug Description
             </th>
             <th>
-                Price ($)
-            </th>
-            <th>
                 Quantity
             </th>
-            <th></th>
+            <th>
+                Price ($)
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -40,10 +39,10 @@
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Price)
+                    @Html.DisplayFor(modelItem => item.Quantity)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Quantity)
+                    @Html.DisplayFor(modelItem => item.Price)
                 </td>
                 <td>
                     @Html.ActionLink("Discard", "Delete", new { item.Id })

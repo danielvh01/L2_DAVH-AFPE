@@ -21,6 +21,11 @@ namespace L2_DAVH_AFPE.Models
 
         public int  Quantity { get; set; }
 
+        public void ChangeQuantity(int Q)
+        {
+            Quantity = Q;
+        }
+
         public int CompareTo(object obj)
         {
             var comparer = ((PharmacyModel)obj).Name;
