@@ -45,7 +45,7 @@ namespace L2_DAVH_AFPE.Controllers
             {
                 return RedirectToAction(nameof(DrugOrder),x) ;
             }
-
+            TempData["testmsg"] = "The drug that you were trying to find does not exist or got out of stock!" + "\n" + "Try to resuply inventory.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -69,8 +69,7 @@ namespace L2_DAVH_AFPE.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DrugOrder(IFormCollection collection)
         {
-            try
-            {
+            
                 var newOrder = new PharmacyModel
                 {
                     Id = Singleton.Instance.contOrder++,
@@ -100,12 +99,12 @@ namespace L2_DAVH_AFPE.Controllers
                     TempData["testmsg"] = "Drug(s) selected out of stock";
                     return View(newOrder);
                 }
-            }
-            catch
-            {
-                TempData["testmsg"] = "The drug that you were trying to find does not exist";
-                return RedirectToAction(nameof(Index));
-            }
+            
+            //catch(EventArgs e)
+            //{
+            //    TempData["testmsg"] = "The drug that you were trying to find does not exist";
+            //    return RedirectToAction(nameof(Index));
+            //}
         }
 
         // GET: PharmacyController/Details/5
@@ -150,7 +149,7 @@ namespace L2_DAVH_AFPE.Controllers
                 PharmacyModel x = Singleton.Instance.inventory.Get(idx);
                 x.Quantity--;
                 if (x.Quantity == 0)
-                {
+                {   
                     Singleton.Instance.guide.Delete(Singleton.Instance.guide.Root, obj);
                 }
                 return RedirectToAction(nameof(Index));
@@ -247,8 +246,9 @@ namespace L2_DAVH_AFPE.Controllers
                 {
                     verif = true;
                     Random r = new Random();
-                    item.Quantity = r.Next(1, 15);
-                    Singleton.Instance.guide.Insert(new Drug { name = item.Name, numberline = i }, Singleton.Instance.guide.Root);
+                    int ra = r.Next(1, 15);
+                    item.Quantity = ra;
+                    Singleton.Instance.guide.Insert(new Drug { name = item.Name, numberline = i, }, Singleton.Instance.guide.Root);                    
                     resuplied += "Drug resuplied: " + item.Name + "\n";
                 }
                 
