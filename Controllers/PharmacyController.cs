@@ -69,6 +69,7 @@ namespace L2_DAVH_AFPE.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DrugOrder(IFormCollection collection)
         {
+            bool verif = false;
             
                 var newOrder = new PharmacyModel
                 {
@@ -84,6 +85,13 @@ namespace L2_DAVH_AFPE.Controllers
                 PharmacyModel x = Singleton.Instance.inventory.Get(idx);
                 if(x.Stock >= newOrder.Quantity)
                 {
+                    for (int i = 0; i < Singleton.Instance.orders.Length; i++)
+                    {                    
+                        if (newOrder.Name == Singleton.Instance.orders.Get(i).Name)
+                        {
+                            verif = true;
+                        }
+                    }                
                     Singleton.Instance.orders.InsertAtEnd(newOrder);
                     x.Stock = x.Stock - newOrder.Quantity;
                     Singleton.Instance.inventory.Delete(idx);
