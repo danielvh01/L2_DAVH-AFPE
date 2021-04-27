@@ -8,9 +8,10 @@ namespace L2_DAVH_AFPE.Models.Data
 
     public sealed class Singleton
     {
+        public string sd;
         public DoubleLinkedList<string> options = new DoubleLinkedList<string>();
         private readonly static Singleton _instance = new Singleton();
-        public DoubleLinkedList<Cart> orders;
+        public DoubleLinkedList<PharmacyModel> orders;
         public DoubleLinkedList<PharmacyModel> inventory;
         public Tree<Drug> guide;
         public bool fileUpload = false;
@@ -18,7 +19,7 @@ namespace L2_DAVH_AFPE.Models.Data
         public int contOrder = 0;
         private Singleton()
         {
-            orders = new DoubleLinkedList<Cart>();
+            orders = new DoubleLinkedList<PharmacyModel>();
             inventory = new DoubleLinkedList<PharmacyModel>();
             guide = new Tree<Drug>();
         }
