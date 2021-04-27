@@ -4,7 +4,7 @@ using System.Linq;
 using System;
 using System.Threading.Tasks;
 
-namespace L2_DAVH_AFPE.Models.Data
+namespace DataStructures
 {
     
     public class DoubleLinkedList<T> : IEnumerable<T> where T : IComparable

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace L2_DAVH_AFPE.Models.Data
+namespace DataStructures
 {
     public class TreeNode<T> where T : IComparable
     {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DataStructures;
 
 namespace L2_DAVH_AFPE.Models.Data
 {
@@ -13,7 +14,7 @@ namespace L2_DAVH_AFPE.Models.Data
         private readonly static Singleton _instance = new Singleton();
         public DoubleLinkedList<PharmacyModel> orders;
         public DoubleLinkedList<PharmacyModel> inventory;
-        public Tree<Drug> guide;
+        public BinaryTree<Drug> guide;
         public bool fileUpload = false;
         public string tree = "";
         public int contOrder = 0;
@@ -21,7 +22,7 @@ namespace L2_DAVH_AFPE.Models.Data
         {
             orders = new DoubleLinkedList<PharmacyModel>();
             inventory = new DoubleLinkedList<PharmacyModel>();
-            guide = new Tree<Drug>();
+            guide = new BinaryTree<Drug>();
         }
 
         public static Singleton Instance
@@ -33,7 +34,7 @@ namespace L2_DAVH_AFPE.Models.Data
         }
         public string getPrice(string product)
         {
-            return "$" + Instance.inventory.Get(Instance.guide.Find(new Drug { name = product, numberline = 0 }, guide.Root).value.numberline).Price;
+            return "$" + Instance.inventory.Get(Instance.guide.Find(new Drug { name = product, numberline = 0 }).numberline).Price;
         }
 
         public void Traverse(TreeNode<Drug> node)

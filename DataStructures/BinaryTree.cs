@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace L2_DAVH_AFPE.Models.Data
+namespace DataStructures
 {
-    public class Tree<T> where T : IComparable
+    public class BinaryTree<T> where T : IComparable
     {
         public TreeNode<T> Root { get; set; }
         public TreeNode<T> Work { get; set; }
 
         public int lenght = 0;
-        public Tree()
+        public BinaryTree()
         {
             Root = null;
         }
@@ -39,13 +39,17 @@ namespace L2_DAVH_AFPE.Models.Data
             }
             return pNode;
         }
-        public TreeNode<T> Find(T value, TreeNode<T> node)
+        public T Find (T value)
+        {
+            return Find(value, Root);
+        }
+        T Find(T value, TreeNode<T> node)
         {
             if (node != null)
             {
                 if (value.CompareTo(node.value) == 0)
                 {
-                    return node;
+                    return node.value;
                 }
                 if (value.CompareTo(node.value) > 0)
                 {
@@ -57,7 +61,7 @@ namespace L2_DAVH_AFPE.Models.Data
                 }
             }
 
-            return null;
+            return default;
         }
         public TreeNode<T> SearchParent(TreeNode<T> node, TreeNode<T> parent)
         {

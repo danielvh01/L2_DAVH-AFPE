@@ -35,42 +35,33 @@ namespace L2_DAVH_AFPE.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Search(IFormCollection collection)
-        {            
-            try {
-                Singleton.Instance.sd = collection["Name"];
-                return RedirectToAction(nameof(DrugOrder));
+        {
+            var c = new Drug
+            {
+                name = collection["Name"]
+            };
+            var x = Singleton.Instance.guide.Find(c);
+            if (x != null)
+            {
+                return RedirectToAction(nameof(DrugOrder),x) ;
             }
-            catch { }
-            return RedirectToAction(nameof(DrugOrder));
+
+            return RedirectToAction(nameof(Index));
         }
 
-        public ActionResult DrugOrder()
+        public ActionResult DrugOrder(Drug drug)
         {
-            try
+            Drug result = Singleton.Instance.guide.Find(drug);
+            if ( result != null)
             {
-                var drug = new Drug
-                {
-                    name = Singleton.Instance.sd,
-                };
-                var pharma = new PharmacyModel
-                {
-                    Name = drug.name
-                };
-
-                if (Singleton.Instance.guide.Find(drug, Singleton.Instance.guide.Root).value.name != null)
-                {
-                    var pharma2 = Singleton.Instance.inventory.Get(Singleton.Instance.inventory.GetPositionOf(pharma));
-                    return View(pharma2);
-                }
-                else
-                {
-                    TempData["alertMessage"] = "The drug that you were trying to find does not exist";
-                    return View();
-                }
-            } 
-            catch {
-                TempData["alertMessage"] = "The drug that you were trying to find does not exist";
-                return RedirectToAction(nameof(Index));
+                var pharma2 = Singleton.Instance.inventory.Get(result.numberline);
+                pharma2.Quantity = 1;
+                return View(pharma2);
+            }
+            else
+            {
+                TempData["testmsg"] = "The drug that you were trying to find does not exist";
+                return View();
             }
 
         }
@@ -89,21 +80,30 @@ namespace L2_DAVH_AFPE.Controllers
                     Price = double.Parse(collection["Price"].ToString().Replace('$', ' ').Replace(')', ' ').Trim()),
                     Quantity = int.Parse(collection["Quantity"])
                 };
-                string name = newOrder.Name;
-                Singleton.Instance.orders.InsertAtEnd(newOrder);
-                Drug obj = new Drug { name = name, numberline = 0 };
-                int idx = Singleton.Instance.guide.Find(obj, Singleton.Instance.guide.Root).value.numberline;
+                Drug obj = new Drug { name = newOrder.Name, numberline = 0 };
+                int idx = Singleton.Instance.guide.Find(obj).numberline;
                 PharmacyModel x = Singleton.Instance.inventory.Get(idx);
-                x.Quantity--;
-                if (x.Quantity == 0)
+                if(x.Quantity >= newOrder.Quantity)
                 {
-                    Singleton.Instance.guide.Delete(Singleton.Instance.guide.Root, obj);
+                    Singleton.Instance.orders.InsertAtEnd(newOrder);
+                    x.Quantity = x.Quantity - newOrder.Quantity;
+                    Singleton.Instance.inventory.Delete(idx);
+                    Singleton.Instance.inventory.Insert(x, idx);
+                    if (x.Quantity == 0)
+                    {
+                        Singleton.Instance.guide.Delete(Singleton.Instance.guide.Root, obj);
+                    }
+                    return RedirectToAction(nameof(Index));
                 }
-                return RedirectToAction(nameof(Index));
+                else
+                {
+                    TempData["testmsg"] = "Drug(s) selected out of stock";
+                    return View(newOrder);
+                }
             }
             catch
             {
-                TempData["alertMessage"] = "The drug that you were trying to find does not exist";
+                TempData["testmsg"] = "The drug that you were trying to find does not exist";
                 return RedirectToAction(nameof(Index));
             }
         }
@@ -146,7 +146,7 @@ namespace L2_DAVH_AFPE.Controllers
                 string name = newOrder.Name;
                 Singleton.Instance.orders.InsertAtEnd(newOrder);
                 Drug obj = new Drug { name = name, numberline = 0 };
-                int idx = Singleton.Instance.guide.Find(obj, Singleton.Instance.guide.Root).value.numberline;
+                int idx = Singleton.Instance.guide.Find(obj).numberline;
                 PharmacyModel x = Singleton.Instance.inventory.Get(idx);
                 x.Quantity--;
                 if (x.Quantity == 0)
@@ -219,6 +219,7 @@ namespace L2_DAVH_AFPE.Controllers
         }
         public ActionResult ViewTree()
         {
+            Singleton.Instance.tree = "";
             Singleton.Instance.PrintTree(Singleton.Instance.guide.Root);
             return View();
         }
@@ -308,7 +309,7 @@ namespace L2_DAVH_AFPE.Controllers
                         if (newDrug.Quantity > 0)
                         {
                             int cont = 0;
-                            while (Singleton.Instance.guide.Find(new Drug { name = Drugss[1], numberline = contador }, Singleton.Instance.guide.Root) != null)
+                            while (Singleton.Instance.guide.Find(new Drug { name = Drugss[1], numberline = contador }) != null)
                             {
                                 Drugss[1] += "#" + ++cont;
                             }
