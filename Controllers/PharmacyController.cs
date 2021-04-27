@@ -82,13 +82,13 @@ namespace L2_DAVH_AFPE.Controllers
                 Drug obj = new Drug { name = newOrder.Name, numberline = 0 };
                 int idx = Singleton.Instance.guide.Find(obj).numberline;
                 PharmacyModel x = Singleton.Instance.inventory.Get(idx);
-                if(x.Quantity >= newOrder.Quantity)
+                if(x.Stock >= newOrder.Quantity)
                 {
                     Singleton.Instance.orders.InsertAtEnd(newOrder);
-                    x.Quantity = x.Quantity - newOrder.Quantity;
+                    x.Stock = x.Stock - newOrder.Quantity;
                     Singleton.Instance.inventory.Delete(idx);
                     Singleton.Instance.inventory.Insert(x, idx);
-                    if (x.Quantity == 0)
+                    if (x.Stock == 0)
                     {
                         Singleton.Instance.guide.Delete(Singleton.Instance.guide.Root, obj);
                     }
@@ -140,15 +140,15 @@ namespace L2_DAVH_AFPE.Controllers
                     Description = collection["Description"],
                     Production_Factory = collection["Production_Factory"],
                     Price = double.Parse(collection["Price"].ToString().Replace('$', ' ').Replace(')', ' ').Trim()),
-                    Quantity = int.Parse(collection["Quantity"])
+                    Stock = int.Parse(collection["Stock"])
                 };
                 string name = newOrder.Name;
                 Singleton.Instance.orders.InsertAtEnd(newOrder);
                 Drug obj = new Drug { name = name, numberline = 0 };
                 int idx = Singleton.Instance.guide.Find(obj).numberline;
                 PharmacyModel x = Singleton.Instance.inventory.Get(idx);
-                x.Quantity--;
-                if (x.Quantity == 0)
+                x.Stock--;
+                if (x.Stock == 0)
                 {   
                     Singleton.Instance.guide.Delete(Singleton.Instance.guide.Root, obj);
                 }
@@ -242,12 +242,12 @@ namespace L2_DAVH_AFPE.Controllers
             for (int i = 0; i < Models.Data.Singleton.Instance.inventory.Length; i++)
             {
                 PharmacyModel item = Models.Data.Singleton.Instance.inventory.Get(i);
-                if (item.Quantity == 0)
+                if (item.Stock == 0)
                 {
                     verif = true;
                     Random r = new Random();
                     int ra = r.Next(1, 15);
-                    item.Quantity = ra;
+                    item.Stock = ra;
                     Singleton.Instance.guide.Insert(new Drug { name = item.Name, numberline = i, }, Singleton.Instance.guide.Root);                    
                     resuplied += "Drug resuplied: " + item.Name + "\n";
                 }
@@ -297,7 +297,7 @@ namespace L2_DAVH_AFPE.Controllers
                             Description = Drugss[2].ToString(),
                             Production_Factory = Drugss[3].ToString(),
                             Price = double.Parse(Drugss[4].Substring(1)),
-                            Quantity = int.Parse(Drugss[5])
+                            Stock = int.Parse(Drugss[5])
                         };
                         int cant = 0;
                         while (Singleton.Instance.inventory.Find(newDrug) != null)
@@ -306,7 +306,7 @@ namespace L2_DAVH_AFPE.Controllers
                         }
                         Singleton.Instance.inventory.InsertAtEnd(newDrug);
                         contador++;
-                        if (newDrug.Quantity > 0)
+                        if (newDrug.Stock > 0)
                         {
                             int cont = 0;
                             while (Singleton.Instance.guide.Find(new Drug { name = Drugss[1], numberline = contador }) != null)

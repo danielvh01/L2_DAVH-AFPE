@@ -9,6 +9,7 @@ namespace L2_DAVH_AFPE.Models.Data
 
     public sealed class Singleton
     {
+        public double total;
         public string sd;
         public DoubleLinkedList<string> options = new DoubleLinkedList<string>();
         private readonly static Singleton _instance = new Singleton();
@@ -37,6 +38,14 @@ namespace L2_DAVH_AFPE.Models.Data
             return "$" + Instance.inventory.Get(Instance.guide.Find(new Drug { name = product, numberline = 0 }).numberline).Price;
         }
 
+        public double totalre()
+        {
+            for (int i = 0; i < orders.Length; i++)
+            {
+                total += orders.Get(i).Price;
+            }
+            return total;
+        }
         public void Traverse(TreeNode<Drug> node)
         {
             if (node == null)

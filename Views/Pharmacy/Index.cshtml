@@ -46,11 +46,19 @@
                     @Html.DisplayFor(modelItem => item.Quantity)
                 </td>
                 <td>
-                    @Html.ActionLink("Delete Order", "Delete", new { item.Id })
+                    @Html.ActionLink("Discard", "Delete", new { item.Id })
                 </td>
             </tr>
         }
     </tbody>
+    <tfoot>
+        <tr>
+            <th id="total" colspan="3">Total :</th>
+            <td>
+                @Singleton.Instance.totalre()
+            </td>
+        </tr>
+    </tfoot>
 </table>
 @if (TempData["testmsg"] != null)
 {
