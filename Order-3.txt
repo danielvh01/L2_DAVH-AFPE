@@ -1,8 +1,8 @@
 Order No. : 3
-Name : Andres
-NIT : 1234567
-Address : Limonada
-Quantity    Product                 Unit Price         SubTotal
-11         12 hour decongestant33.86               372.46
-7           Zyprexa                   598.3               4188.099999999999
-Total Amount:                                          744.92
+Name : a
+NIT : 123
+Address : sdf
+Quantity   | Product              | Unit Price| Sub Total
+1          | Acyclovir            | 931.69    | 931.69
+5          | Zyprexa              | 598.30    | 2,991.50
+Total Amount:                                   3923.19
