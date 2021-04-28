@@ -215,43 +215,52 @@ namespace L2_DAVH_AFPE.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
-        public ActionResult ViewTree(int i)
+        public ActionResult ViewTreePO()
         {
             Singleton.Instance.tree = "";
-            switch (i)
-            {
-                case 0:
-                    Singleton.Instance.PreOrder(Singleton.Instance.guide.Root);
-                    break;
-                case 1:
-                    Singleton.Instance.InOrder(Singleton.Instance.guide.Root);
-                    break;
-                case 2:
-                    Singleton.Instance.PostOrder(Singleton.Instance.guide.Root);
-                    break;
-            }
-            
+            Singleton.Instance.PostOrder(Singleton.Instance.guide.Root);
             return View();
         }
-        public FileResult DownloadFile(int i)
+        public ActionResult ViewTreeIO()
         {
-            StreamWriter file = new StreamWriter("Guide.txt", true);
-            switch (i)
-            {
-                case 0:
-                    file.Write(Singleton.Instance.PreOrder(Singleton.Instance.guide.Root));
-                    break;
-                case 1:
-                    file.Write(Singleton.Instance.InOrder(Singleton.Instance.guide.Root)); break;
-                case 2:
-                    file.Write(Singleton.Instance.PostOrder(Singleton.Instance.guide.Root)); break;
-            }
+            Singleton.Instance.tree = "";
+            Singleton.Instance.InOrder(Singleton.Instance.guide.Root);
+            return View();
+        }
+        public ActionResult ViewTreePEO()
+        {
+            Singleton.Instance.tree = "";
+            Singleton.Instance.PreOrder(Singleton.Instance.guide.Root);
+            return View();
+        }
+        public FileResult PreOrder()
+        {
+            StreamWriter file = new StreamWriter("Guide.txt", false);            
+            file.Write(Singleton.Instance.PreOrder(Singleton.Instance.guide.Root));           
             file.Close();
             byte[] fileBytes = System.IO.File.ReadAllBytes("Guide.txt");
             string fileName = "Guide.txt";
             return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
         }
-        
+        public FileResult PostOrder()
+        {
+            StreamWriter file = new StreamWriter("Guide.txt", false);
+            file.Write(Singleton.Instance.PostOrder(Singleton.Instance.guide.Root));            
+            file.Close();
+            byte[] fileBytes = System.IO.File.ReadAllBytes("Guide.txt");
+            string fileName = "Guide.txt";
+            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
+        }
+        public FileResult InOrder()
+        {
+            StreamWriter file = new StreamWriter("Guide.txt", false);
+            file.Write(Singleton.Instance.InOrder(Singleton.Instance.guide.Root));
+            file.Close();
+            byte[] fileBytes = System.IO.File.ReadAllBytes("Guide.txt");
+            string fileName = "Guide.txt";
+            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
+        }
+
         public ActionResult Resuply()
         {
             string resuplied = "";
