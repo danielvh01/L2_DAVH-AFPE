@@ -1,14 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using L2_DAVH_AFPE.Models;
 using L2_DAVH_AFPE.Models.Data;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
-using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.FileIO;
 
 
@@ -76,13 +72,12 @@ namespace L2_DAVH_AFPE.Controllers
                     Price = double.Parse(collection["Price"].ToString().Replace('$', ' ').Replace(')', ' ').Trim()),
                     Quantity = int.Parse(collection["Quantity"])
                 };
-                int idx = Singleton.Instance.guide.Find(x => x.name.CompareTo(newOrder.Name), Singleton.Instance.guide.Root).numberline;
-                PharmacyModel x = Singleton.Instance.inventory.Get(idx);
+                PharmacyModel x = Singleton.Instance.inventory.Get(newOrder.Id);
                 if(x.Quantity >= newOrder.Quantity)
                 {
                     if (Singleton.Instance.orders.Exists(a => a.Name == x.Name))
                     {
-                        var order = Singleton.Instance.orders.Get(idx);
+                        var order = Singleton.Instance.orders.Get(newOrder.Id);
                         order.Quantity += newOrder.Quantity;
                     }
                     else
@@ -112,9 +107,9 @@ namespace L2_DAVH_AFPE.Controllers
         // GET: PharmacyController/Details/5
         public ActionResult Details(int ID)
         {
-            PharmacyModel drug = Singleton.Instance.orders.Get(ID);
+            PharmacyModel drug = Singleton.Instance.orders.Find(x => x.Name == Singleton.Instance.inventory.Get(ID).Name);
             return View(drug);
-        }
+        }   
 
         // GET: PharmacyController/Create
         public ActionResult Create()
@@ -181,7 +176,7 @@ namespace L2_DAVH_AFPE.Controllers
         // GET: PharmacyController/Delete/5
         public ActionResult Delete(int ID)
         {
-            PharmacyModel drug = Singleton.Instance.orders.Get(ID);
+            PharmacyModel drug = Singleton.Instance.orders.Find(x => x.Name == Singleton.Instance.inventory.Get(ID).Name);
             return View(drug);
         }
 
@@ -192,9 +187,15 @@ namespace L2_DAVH_AFPE.Controllers
         {
             try
             {
-                PharmacyModel a = Singleton.Instance.orders.Get(ID);
-                Singleton.Instance.inventory.Get(a.Id).Quantity += a.Quantity;
-                Singleton.Instance.orders.Delete(ID);
+                PharmacyModel x = Singleton.Instance.inventory.Get(ID);
+                int idx = Singleton.Instance.orders.GetPositionOf(y => y.Name == x.Name);
+                PharmacyModel a = Singleton.Instance.orders.Get(idx);
+                if(x.Quantity == 0)
+                {
+                    Singleton.Instance.guide.Insert(new Drug { name = x.Name, numberline = x.Id }, Singleton.Instance.guide.Root);
+                }
+                x.Quantity += a.Quantity;
+                Singleton.Instance.orders.Delete(idx);
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -320,7 +321,7 @@ namespace L2_DAVH_AFPE.Controllers
                         Drugss = txtfldprsr.ReadFields();
                         var newDrug = new PharmacyModel
                         {
-                            Id = int.Parse(Drugss[0]),
+                            Id = int.Parse(Drugss[0]) - 1,
                             Name = Drugss[1].ToString(),
                             Description = Drugss[2].ToString(),
                             Production_Factory = Drugss[3].ToString(),
@@ -330,7 +331,7 @@ namespace L2_DAVH_AFPE.Controllers
                         Singleton.Instance.inventory.InsertAtEnd(newDrug);
                         if (newDrug.Quantity > 0)
                         {
-                            Singleton.Instance.guide.Insert(new Drug { name = Drugss[1], numberline = contador++ }, Singleton.Instance.guide.Root);
+                            Singleton.Instance.guide.Insert(new Drug { name = Drugss[1], numberline = newDrug.Id }, Singleton.Instance.guide.Root);
                         }
                     }
                     catch (Exception e)

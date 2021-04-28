@@ -46,7 +46,7 @@ namespace L2_DAVH_AFPE.Models.Data
                 var x = orders.Get(i);
                 total += x.Price * x.Quantity;
             }
-            return total;
+            return Math.Round(total,2);
         }
 
         public void Resuply()
