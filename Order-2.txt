@@ -1,7 +1,0 @@
-Order No. : 2
-Name : Andres
-NIT : 1234567
-Address : Limonada
-Quantity    Product                 Unit Price         SubTotal
-1           Acyclovir               931.69             931.69
-Total Amount:                                          931.69

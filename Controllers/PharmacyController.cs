@@ -159,16 +159,17 @@ namespace L2_DAVH_AFPE.Controllers
             file.WriteLine("Name : " + cart.clientName);
             file.WriteLine("NIT : " + cart.NIT);
             file.WriteLine("Address : " + cart.address);
-            String format = "{0,-10} | {1,-20} | {2,-10}| {3,5}";
+            String format = "{0,-10} | {1,-68} | {2,-10}| {3,5}";
             string print = String.Format(format, "Quantity", "Product", "Unit Price", "Sub Total");
             file.WriteLine(print);
             foreach (var product in cart.products)
             {
                 file.WriteLine(String.Format(format, product.Quantity.ToString(), product.Name, product.Price.ToString("N2"), (product.Quantity * product.Price).ToString("N2")));
             }
-            file.WriteLine("Total Amount:                                   " + cart.amount);
+            file.WriteLine("Total Amount:                                                                                 | " + cart.amount);
             file.Close();
             byte[] fileBytes = System.IO.File.ReadAllBytes(fileName);
+            System.IO.File.Delete(fileName);
             return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
         }
 

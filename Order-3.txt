@@ -1,8 +1,0 @@
-Order No. : 3
-Name : a
-NIT : 123
-Address : sdf
-Quantity   | Product              | Unit Price| Sub Total
-1          | Acyclovir            | 931.69    | 931.69
-5          | Zyprexa              | 598.30    | 2,991.50
-Total Amount:                                   3923.19
