@@ -69,7 +69,7 @@ namespace L2_DAVH_AFPE.Models.Data
             {
                 return "";
             }
-            tree += node.value.name + " Numberline: " + node.value.numberline + "\r\n";
+            tree += node.value.name + "| Numberline: " + node.value.numberline + "\r\n";
             if (node.left != null)
             {
                 PreOrder(node.left);
@@ -90,7 +90,7 @@ namespace L2_DAVH_AFPE.Models.Data
             {
                 InOrder(node.left);
             }
-            tree += node.value.name + " Numberline: " + node.value.numberline + "\r\n";
+            tree += node.value.name + "| Numberline: " + node.value.numberline + "\r\n";
             if (node.right != null)
             {
                 InOrder(node.right);
@@ -111,7 +111,7 @@ namespace L2_DAVH_AFPE.Models.Data
             {
                 InOrder(node.right);
             }
-            tree += node.value.name + " Numberline: " + node.value.numberline + "\r\n";
+            tree += node.value.name + "| Numberline: " + node.value.numberline + "\r\n";
             return tree;
         }
 
