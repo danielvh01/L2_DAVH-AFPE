@@ -119,7 +119,15 @@ namespace L2_DAVH_AFPE.Controllers
         // GET: PharmacyController/Create
         public ActionResult Create()
         {
-            return View();
+            if (Singleton.Instance.orders.Length > 0)
+            {
+                return View();
+            }
+            else
+            {
+                TempData["testmsg"] = "To proceed you need to have at least one Drug in your Cart.";
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         // POST: PharmacyController/Create
@@ -127,56 +135,46 @@ namespace L2_DAVH_AFPE.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)
         {
-
-            try
-            {
-                //var newOrder = new PharmacyModel
-                //{
-                //    Id = Singleton.Instance.contOrder++,
-                //    Name = collection["Name"],
-                //    Description = collection["Description"],
-                //    Production_Factory = collection["Production_Factory"],
-                //    Price = double.Parse(collection["Price"].ToString().Replace('$', ' ').Replace(')', ' ').Trim()),
-                //    Stock = int.Parse(collection["Stock"])
-                //};
-                //string name = newOrder.Name;
-                //Singleton.Instance.orders.InsertAtEnd(newOrder);
-                //Drug obj = new Drug { name = name, numberline = 0 };
-                //int idx = Singleton.Instance.guide.Find(obj).numberline;
-                //PharmacyModel x = Singleton.Instance.inventory.Get(idx);
-                //x.Stock--;
-                //if (x.Stock == 0)
-                //{   
-                //    Singleton.Instance.guide.Delete(Singleton.Instance.guide.Root, obj);
-                //}
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            Cart Cart = new Cart();
+            Cart.clientName = collection["clientName"];
+            Cart.NIT = collection["NIT"];
+            Cart.address = collection["address"];
+            Singleton.Instance.cart = Cart;
+            return RedirectToAction(nameof(Checkout), Cart);
 
         }
 
         // GET: PharmacyController/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Checkout(Cart cart)
         {
-            return View();
+            return View(cart);
         }
 
         // POST: PharmacyController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public FileResult Confirm()
         {
-            try
+            Cart cart = Singleton.Instance.cart;
+            while(Singleton.Instance.orders.Length >0)
             {
-                return RedirectToAction(nameof(Index));
+                Singleton.Instance.orders.Delete(0);
             }
-            catch
+            string fileName = "Order-" + cart.ID + ".txt";
+            StreamWriter file = new StreamWriter(fileName, false);
+            file.WriteLine("Order No. : " + cart.ID.ToString());
+            file.WriteLine("Name : " + cart.clientName);
+            file.WriteLine("NIT : " + cart.NIT);
+            file.WriteLine("Address : " + cart.address);
+            String format = "{0,-10} | {1,-20} | {2,-10}| {3,5}";
+            string print = String.Format(format, "Quantity", "Product", "Unit Price", "Sub Total");
+            file.WriteLine(print);
+            foreach (var product in cart.products)
             {
-                return View();
+                file.WriteLine(String.Format(format, product.Quantity.ToString(), product.Name, product.Price.ToString("N2"), (product.Quantity * product.Price).ToString("N2")));
             }
+            file.WriteLine("Total Amount:                                   " + cart.amount);
+            file.Close();
+            byte[] fileBytes = System.IO.File.ReadAllBytes(fileName);
+            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
         }
 
         // GET: PharmacyController/Delete/5
@@ -331,7 +329,7 @@ namespace L2_DAVH_AFPE.Controllers
                         Singleton.Instance.inventory.InsertAtEnd(newDrug);
                         if (newDrug.Quantity > 0)
                         {
-                            Singleton.Instance.guide.Insert(new Drug { name = Drugss[1], numberline = ++contador }, Singleton.Instance.guide.Root);
+                            Singleton.Instance.guide.Insert(new Drug { name = Drugss[1], numberline = contador++ }, Singleton.Instance.guide.Root);
                         }
                     }
                     catch (Exception e)

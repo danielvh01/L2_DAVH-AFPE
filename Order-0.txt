@@ -1,0 +1,7 @@
+Order No. : 0
+Name : 
+NIT : 
+Address : 
+Quantity    Product                 Unit Price         SubTotal
+1           Acyclovir               931.69             931.69
+Total Amount:                                          931.69

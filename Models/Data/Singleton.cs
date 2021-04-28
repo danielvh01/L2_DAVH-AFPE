@@ -11,14 +11,14 @@ namespace L2_DAVH_AFPE.Models.Data
     {
         public double total;
         public string sd;
-        public DoubleLinkedList<string> options = new DoubleLinkedList<string>();
         private readonly static Singleton _instance = new Singleton();
         public DoubleLinkedList<PharmacyModel> orders;
         public DoubleLinkedList<PharmacyModel> inventory;
         public BinaryTree<Drug> guide;
         public bool fileUpload = false;
         public string tree = "";
-        public int contOrder = 0;
+        public int contCarts = 0;
+        public Cart cart;
         private Singleton()
         {
             orders = new DoubleLinkedList<PharmacyModel>();

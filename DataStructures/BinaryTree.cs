@@ -119,8 +119,8 @@ namespace DataStructures
                 }
                 else
                 {
-                    node.value = FindMinimum(node.right).value;
-                    node.right = Delete(node.right, node.value);
+                    node.value = FindMinimum(node.left).value;
+                    node.left = Delete(node.left, node.value);
                 }
             }
             return node;

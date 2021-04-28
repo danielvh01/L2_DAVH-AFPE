@@ -208,7 +208,7 @@ namespace DataStructures
                 {
                     Node<T> node = First;
                     int cont = 0;
-                    while (node != null && cont < position -1)
+                    while (node != null && cont < position)
                     {
                         node = node.next;
                         cont++;
