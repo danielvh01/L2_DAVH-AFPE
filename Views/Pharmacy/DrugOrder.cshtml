@@ -17,13 +17,14 @@
     <div class="col-md-4">
         <form asp-action="DrugOrder">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @Html.HiddenFor(model => model.Id)
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control"  />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label class="control-label text-xl-left">Stock: @Html.DisplayFor(model => Singleton.Instance.inventory.Get(Singleton.Instance.guide.Find(x => x.name.CompareTo(model.Name), Singleton.Instance.guide.Root).numberline).Stock)</label>
+                <label class="control-label text-xl-left">Stock: @Html.DisplayFor(model => model.Quantity)</label>
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
@@ -41,9 +42,9 @@
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Quantity" class="control-label"></label>
-                <input asp-for="Quantity" class="form-control"  />
-                <span asp-validation-for="Quantity" class="text-danger"></span>
+                <label class="control-label"></label>
+                <input class="form-control" type="number" name="Quantity" id="Quantity" value="1" min="1" max="@(Model.Quantity)" />
+                <span class="text-danger" required></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

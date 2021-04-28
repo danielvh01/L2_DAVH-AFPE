@@ -63,22 +63,55 @@ namespace L2_DAVH_AFPE.Models.Data
             }
         }
 
-        public string PrintTree(TreeNode<Drug> node)
+        public string PreOrder(TreeNode<Drug> node)
         {
             if (node == null)
             {
                 return "";
             }
-            if (node.right != null)
-            {
-                PrintTree(node.right);
-            }
             tree += node.value.name + " Numberline: " + node.value.numberline + "\r\n";
-            
             if (node.left != null)
             {
-                PrintTree(node.left);
+                PreOrder(node.left);
             }
+            if (node.right != null)
+            {
+                PreOrder(node.right);
+            }
+            return tree;
+        }
+        public string InOrder(TreeNode<Drug> node)
+        {
+            if (node == null)
+            {
+                return "";
+            }
+            if (node.left != null)
+            {
+                InOrder(node.left);
+            }
+            tree += node.value.name + " Numberline: " + node.value.numberline + "\r\n";
+            if (node.right != null)
+            {
+                InOrder(node.right);
+            }
+            return tree;
+        }
+        public string PostOrder(TreeNode<Drug> node)
+        {
+            if (node == null)
+            {
+                return "";
+            }
+            if (node.left != null)
+            {
+                InOrder(node.left);
+            }
+            if (node.right != null)
+            {
+                InOrder(node.right);
+            }
+            tree += node.value.name + " Numberline: " + node.value.numberline + "\r\n";
             return tree;
         }
 

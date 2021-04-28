@@ -53,7 +53,6 @@ namespace L2_DAVH_AFPE.Controllers
             if ( drug != null)
             {
                 var pharma2 = Singleton.Instance.inventory.Get(drug.numberline);
-                pharma2.Quantity = 1;
                 return View(pharma2);
             }
             else
@@ -70,7 +69,7 @@ namespace L2_DAVH_AFPE.Controllers
             
                 var newOrder = new PharmacyModel
                 {
-                    Id = Singleton.Instance.contOrder++,
+                    Id = int.Parse(collection["Id"]),
                     Name = collection["Name"],
                     Description = collection["Description"],
                     Production_Factory = collection["Production_Factory"],
@@ -79,19 +78,19 @@ namespace L2_DAVH_AFPE.Controllers
                 };
                 int idx = Singleton.Instance.guide.Find(x => x.name.CompareTo(newOrder.Name), Singleton.Instance.guide.Root).numberline;
                 PharmacyModel x = Singleton.Instance.inventory.Get(idx);
-                if(x.Stock >= newOrder.Quantity)
+                if(x.Quantity >= newOrder.Quantity)
                 {
                     if (Singleton.Instance.orders.Exists(a => a.Name == x.Name))
                     {
                         var order = Singleton.Instance.orders.Get(idx);
-                        order.ChangeQuantity(order.Quantity + x.Quantity);
+                        order.Quantity += newOrder.Quantity;
                     }
                     else
                     {
                         Singleton.Instance.orders.InsertAtEnd(newOrder);
                     }
-                    x.ChangeQuantity(x.Stock - newOrder.Quantity);
-                    if (x.Stock == 0)
+                    x.Quantity -= newOrder.Quantity;
+                    if (x.Quantity == 0)
                     {
                         Singleton.Instance.guide.Delete(Singleton.Instance.guide.Root, new Drug { name = x.Name });
                     }
@@ -194,6 +193,8 @@ namespace L2_DAVH_AFPE.Controllers
         {
             try
             {
+                PharmacyModel a = Singleton.Instance.orders.Get(ID);
+                Singleton.Instance.inventory.Get(a.Id).Quantity += a.Quantity;
                 Singleton.Instance.orders.Delete(ID);
                 return RedirectToAction(nameof(Index));
             }
@@ -214,25 +215,43 @@ namespace L2_DAVH_AFPE.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
-        public ActionResult ViewTree()
+        public ActionResult ViewTree(int i)
         {
             Singleton.Instance.tree = "";
-            Singleton.Instance.PrintTree(Singleton.Instance.guide.Root);
+            switch (i)
+            {
+                case 0:
+                    Singleton.Instance.PreOrder(Singleton.Instance.guide.Root);
+                    break;
+                case 1:
+                    Singleton.Instance.InOrder(Singleton.Instance.guide.Root);
+                    break;
+                case 2:
+                    Singleton.Instance.PostOrder(Singleton.Instance.guide.Root);
+                    break;
+            }
+            
             return View();
         }
-        public ActionResult DownloadFile()
+        public FileResult DownloadFile(int i)
         {
             StreamWriter file = new StreamWriter("Guide.txt", true);
-            file.Write(Singleton.Instance.PrintTree(Singleton.Instance.guide.Root));
+            switch (i)
+            {
+                case 0:
+                    file.Write(Singleton.Instance.PreOrder(Singleton.Instance.guide.Root));
+                    break;
+                case 1:
+                    file.Write(Singleton.Instance.InOrder(Singleton.Instance.guide.Root)); break;
+                case 2:
+                    file.Write(Singleton.Instance.PostOrder(Singleton.Instance.guide.Root)); break;
+            }
             file.Close();
             byte[] fileBytes = System.IO.File.ReadAllBytes("Guide.txt");
             string fileName = "Guide.txt";
             return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
         }
-        public ActionResult Download()
-        {
-            return File(pathito, Singleton.Instance.PrintTree(Singleton.Instance.guide.Root), "report.txt");
-        }
+        
         public ActionResult Resuply()
         {
             string resuplied = "";
@@ -240,12 +259,15 @@ namespace L2_DAVH_AFPE.Controllers
             for (int i = 0; i < Models.Data.Singleton.Instance.inventory.Length; i++)
             {
                 PharmacyModel item = Models.Data.Singleton.Instance.inventory.Get(i);
-                if (item.Stock == 0)
+                if (item.Name == "Acyclovir") 
+                { 
+                }
+                if (item.Quantity == 0)
                 {
                     verif = true;
                     Random r = new Random();
                     int ra = r.Next(1, 15);
-                    item.Stock = ra;
+                    item.Quantity = ra;
                     Singleton.Instance.guide.Insert(new Drug { name = item.Name, numberline = i, }, Singleton.Instance.guide.Root);                    
                     resuplied += "Drug resuplied: " + item.Name + "\n";
                 }
@@ -295,10 +317,10 @@ namespace L2_DAVH_AFPE.Controllers
                             Description = Drugss[2].ToString(),
                             Production_Factory = Drugss[3].ToString(),
                             Price = double.Parse(Drugss[4].Substring(1)),
-                            Stock = int.Parse(Drugss[5])
+                            Quantity = int.Parse(Drugss[5])
                         };
                         Singleton.Instance.inventory.InsertAtEnd(newDrug);
-                        if (newDrug.Stock > 0)
+                        if (newDrug.Quantity > 0)
                         {
                             Singleton.Instance.guide.Insert(new Drug { name = Drugss[1], numberline = ++contador }, Singleton.Instance.guide.Root);
                         }

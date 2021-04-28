@@ -244,18 +244,18 @@ namespace DataStructures
             }
             return false;
         }
-        public int GetPositionOf(T value)
+        public int GetPositionOf(Func<T,bool> comparer)
         {
             Node<T> temp = First;
             int cont = 0;
-            while (temp != null && temp.value.CompareTo(value) < 0)
+            while (temp != null && !comparer.Invoke(temp.value))
             {
                 temp = temp.next;
                 cont++;
             }
             if (temp != null)
             {
-                if (temp.value.CompareTo(value) == 0)
+                if (comparer.Invoke(temp.value))
                 {
                     return cont;
                 }

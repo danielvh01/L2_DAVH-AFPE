@@ -17,7 +17,7 @@ namespace L2_DAVH_AFPE.Models
         public string Production_Factory { get; set; }
 
         public double Price { get; set; }
-        public int Stock { get; set; }
+        //public int Stock { get; set; }
 
         public int  Quantity { get; set; }
 
