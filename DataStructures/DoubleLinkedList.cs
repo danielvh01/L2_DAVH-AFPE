@@ -4,7 +4,7 @@ using System.Linq;
 using System;
 using System.Threading.Tasks;
 
-namespace L2_DAVH_AFPE.Models.Data
+namespace DataStructures
 {
     
     public class DoubleLinkedList<T> : IEnumerable<T> where T : IComparable
@@ -208,7 +208,7 @@ namespace L2_DAVH_AFPE.Models.Data
                 {
                     Node<T> node = First;
                     int cont = 0;
-                    while (node != null && cont < position - 1)
+                    while (node != null && cont < position)
                     {
                         node = node.next;
                         cont++;
@@ -227,19 +227,35 @@ namespace L2_DAVH_AFPE.Models.Data
                 return default;
             }
         }
-       
-        public int GetPositionOf(T value)
+        
+        public bool Exists(Func<T,bool> comparer)
+        {
+            Node<T> temp = First;
+            while(temp != null)
+            {
+                if(comparer.Invoke(temp.value))
+                {
+                    return true;
+                }
+                else
+                {
+                    temp = temp.next;
+                }
+            }
+            return false;
+        }
+        public int GetPositionOf(Func<T,bool> comparer)
         {
             Node<T> temp = First;
             int cont = 0;
-            while (temp != null && temp.value.CompareTo(value) < 0)
+            while (temp != null && !comparer.Invoke(temp.value))
             {
                 temp = temp.next;
                 cont++;
             }
             if (temp != null)
             {
-                if (temp.value.CompareTo(value) == 0)
+                if (comparer.Invoke(temp.value))
                 {
                     return cont;
                 }

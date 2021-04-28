@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace L2_DAVH_AFPE.Models.Data
+namespace DataStructures
 {
-    public class Tree<T> where T : IComparable
+    public class BinaryTree<T> where T : IComparable
     {
         public TreeNode<T> Root { get; set; }
         public TreeNode<T> Work { get; set; }
 
         public int lenght = 0;
-        public Tree()
+        public BinaryTree()
         {
             Root = null;
         }
@@ -39,25 +39,26 @@ namespace L2_DAVH_AFPE.Models.Data
             }
             return pNode;
         }
-        public TreeNode<T> Find(T value, TreeNode<T> node)
+        
+        public T Find(Func<T, int> comparer, TreeNode<T> node)
         {
             if (node != null)
             {
-                if (value.CompareTo(node.value) == 0)
+                if (comparer.Invoke(node.value) == 0)
                 {
-                    return node;
+                    return node.value;
                 }
-                if (value.CompareTo(node.value) > 0)
+                if (comparer.Invoke(node.value) > 0)
                 {
-                    return Find(value, node.left);
+                    return Find(comparer, node.left);
                 }
                 else
                 {
-                    return Find(value, node.right);
+                    return Find(comparer, node.right);
                 }
             }
 
-            return null;
+            return default;
         }
         public TreeNode<T> SearchParent(TreeNode<T> node, TreeNode<T> parent)
         {
@@ -118,8 +119,8 @@ namespace L2_DAVH_AFPE.Models.Data
                 }
                 else
                 {
-                    node.value = FindMinimum(node.right).value;
-                    node.right = Delete(node.right, node.value);
+                    node.value = FindMinimum(node.left).value;
+                    node.left = Delete(node.left, node.value);
                 }
             }
             return node;

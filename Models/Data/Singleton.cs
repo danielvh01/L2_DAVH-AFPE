@@ -2,25 +2,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DataStructures;
 
 namespace L2_DAVH_AFPE.Models.Data
 {
 
     public sealed class Singleton
     {
-        public DoubleLinkedList<string> options = new DoubleLinkedList<string>();
+        public double total;
+        public string sd;
         private readonly static Singleton _instance = new Singleton();
-        public DoubleLinkedList<Cart> orders;
+        public DoubleLinkedList<PharmacyModel> orders;
         public DoubleLinkedList<PharmacyModel> inventory;
-        public Tree<Drug> guide;
+        public BinaryTree<Drug> guide;
         public bool fileUpload = false;
         public string tree = "";
-        public int contOrder = 0;
+        public int contCarts = 0;
+        public Cart cart;
         private Singleton()
         {
-            orders = new DoubleLinkedList<Cart>();
+            orders = new DoubleLinkedList<PharmacyModel>();
             inventory = new DoubleLinkedList<PharmacyModel>();
-            guide = new Tree<Drug>();
+            guide = new BinaryTree<Drug>();
         }
 
         public static Singleton Instance
@@ -32,24 +35,18 @@ namespace L2_DAVH_AFPE.Models.Data
         }
         public string getPrice(string product)
         {
-            return "$" + Instance.inventory.Get(Instance.guide.Find(new Drug { name = product, numberline = 0 }, guide.Root).value.numberline).Price;
+            return "$" + Instance.inventory.Get(Instance.guide.Find(x => x.name.CompareTo(product), Singleton.Instance.guide.Root).numberline).Price;
         }
 
-        public void Traverse(TreeNode<Drug> node)
+        public double totalre()
         {
-            if (node == null)
+            total = 0;
+            for (int i = 0; i < orders.Length; i++)
             {
-                return;
+                var x = orders.Get(i);
+                total += x.Price * x.Quantity;
             }
-            if (node.left != null)
-            {
-                Traverse(node.left);
-            }
-            options.InsertAtEnd(node.value.name + " ( " + getPrice(node.value.name) + " ) ");
-            if (node.right != null)
-            {
-                Traverse(node.right);
-            }
+            return total;
         }
 
         public void Resuply()
@@ -66,22 +63,55 @@ namespace L2_DAVH_AFPE.Models.Data
             }
         }
 
-        public string PrintTree(TreeNode<Drug> node)
+        public string PreOrder(TreeNode<Drug> node)
         {
             if (node == null)
             {
                 return "";
             }
-            if (node.right != null)
-            {
-                PrintTree(node.right);
-            }
-            tree += node.value.name + " Numberline: " + node.value.numberline + "\r\n";
-            
+            tree += node.value.name + "| Numberline: " + node.value.numberline + "\r\n";
             if (node.left != null)
             {
-                PrintTree(node.left);
+                PreOrder(node.left);
             }
+            if (node.right != null)
+            {
+                PreOrder(node.right);
+            }
+            return tree;
+        }
+        public string InOrder(TreeNode<Drug> node)
+        {
+            if (node == null)
+            {
+                return "";
+            }
+            if (node.left != null)
+            {
+                InOrder(node.left);
+            }
+            tree += node.value.name + "| Numberline: " + node.value.numberline + "\r\n";
+            if (node.right != null)
+            {
+                InOrder(node.right);
+            }
+            return tree;
+        }
+        public string PostOrder(TreeNode<Drug> node)
+        {
+            if (node == null)
+            {
+                return "";
+            }
+            if (node.left != null)
+            {
+                InOrder(node.left);
+            }
+            if (node.right != null)
+            {
+                InOrder(node.right);
+            }
+            tree += node.value.name + "| Numberline: " + node.value.numberline + "\r\n";
             return tree;
         }
 
